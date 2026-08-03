@@ -1,5 +1,7 @@
-FINAL HTML PROJECT
-Tailwind only. No styles.css.
-Headline preserved exactly.
-Angled blue car hero asset included.
-Phone: 1-855-629-1872 / tel:18556291872
+FINAL HTML FIX
+- Removed the large dead white gap between text and image
+- Removed the artificial white fade overlay
+- Uses angled blue car artwork
+- Teddy has a clearly visible diagonal shoulder seat belt
+- Tailwind only; no styles.css
+- Phone: 1-855-629-1872 / tel:18556291872
