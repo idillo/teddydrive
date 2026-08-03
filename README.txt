@@ -1,10 +1,2 @@
-FINAL TAILWIND VERSION
-
-There is no styles.css file.
-Tailwind is loaded directly in each HTML file.
-
-Replace both:
-1-800-123-4567
-tel:18001234567
-
-Then push the files to GitHub. Vercel will redeploy automatically.
+Tailwind-only TeddyDrive site with seat-belt hero and centered 13px footer.
+Phone: 1-855-629-1872 / tel:18556291872
