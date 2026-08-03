@@ -1,0 +1,275 @@
+
+:root {
+  --navy: #062d59;
+  --navy-dark: #03274d;
+  --blue: #0867c7;
+  --blue-bright: #208be7;
+  --orange: #ff7900;
+  --orange-dark: #ee6500;
+  --ink: #082b58;
+  --muted: #4b5f75;
+  --pale: #eff7ff;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+.site-shell { width: min(100%, 1440px); margin: 0 auto; overflow: hidden; background: #fff; }
+.container { width: min(1180px, calc(100% - 64px)); margin-inline: auto; }
+.header {
+  min-height: 122px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+}
+.header-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand { display: flex; align-items: center; text-decoration: none; gap: 15px; }
+.brand img { width: 94px; height: 94px; object-fit: contain; }
+.brand-name {
+  font-size: clamp(42px, 5vw, 62px);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -3px;
+  color: var(--navy);
+}
+.brand-name span { color: #2588dc; }
+.header-call { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+.call-circle {
+  width: 58px; height: 58px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, #0f72d4, #0756a8);
+  color: #fff;
+  box-shadow: 0 6px 15px rgba(8, 78, 153, .22);
+}
+.header-call small { display: block; font-size: 20px; color: #102f56; margin-bottom: 2px; }
+.header-call strong { display: block; font-size: 35px; line-height: 1; color: var(--navy); }
+
+.hero {
+  position: relative;
+  min-height: 758px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.92) 41%, rgba(255,255,255,.12) 64%),
+    url("assets/teddy-drive-hero.jpg") right center / 58% 100% no-repeat;
+}
+.hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(219,243,255,.35), rgba(255,255,255,0) 34%, rgba(255,255,255,.15));
+}
+.hero-inner { position: relative; z-index: 2; padding-top: 58px; padding-bottom: 48px; }
+.hero-copy { width: 53%; max-width: 650px; }
+.hero h1 {
+  margin: 0;
+  font-size: clamp(46px, 5.2vw, 73px);
+  line-height: 1.08;
+  letter-spacing: -2.7px;
+  color: var(--navy);
+  font-weight: 900;
+}
+.hero-lead {
+  margin: 26px 0 25px;
+  max-width: 580px;
+  color: #111;
+  font-size: 25px;
+  line-height: 1.42;
+}
+.check-list { list-style: none; margin: 0 0 27px; padding: 0; display: grid; gap: 15px; }
+.check-list li { display: flex; align-items: center; gap: 13px; font-size: 22px; color: #111; }
+.check {
+  width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%;
+  display: grid; place-items: center; background: #1164b8; color: white; font-weight: 900;
+}
+.main-cta {
+  width: min(100%, 510px);
+  min-height: 118px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff8b00, #f96700);
+  color: white;
+  display: flex; align-items: center; justify-content: center; gap: 25px;
+  text-decoration: none;
+  box-shadow: 0 11px 24px rgba(235, 94, 0, .22);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.main-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 28px rgba(235, 94, 0, .28); }
+.main-cta .cta-icon { width: 65px; height: 65px; }
+.main-cta strong { display: block; font-size: 39px; line-height: 1; letter-spacing: .3px; }
+.main-cta span { display: block; font-size: 31px; line-height: 1.15; font-weight: 800; margin-top: 5px; }
+.security { margin: 17px 0 0 52px; display: flex; align-items: center; gap: 9px; color: #384b5e; font-size: 16px; }
+
+.benefit-band { background: linear-gradient(100deg, #062d59, #003a72); color: white; }
+.benefit-grid {
+  min-height: 254px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+.benefit {
+  padding: 20px 34px;
+  display: grid; grid-template-columns: 98px 1fr;
+  align-items: center; gap: 24px;
+}
+.benefit + .benefit { border-left: 1px solid rgba(255,255,255,.28); }
+.benefit-icon {
+  width: 94px; height: 94px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, #1581ec, #0b58ae);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.benefit h3 { margin: 0 0 10px; font-size: 23px; }
+.benefit p { margin: 0; font-size: 18px; line-height: 1.4; color: #f1f6fb; }
+
+.coverage { padding: 54px 0 64px; text-align: center; }
+.section-title { margin: 0; font-size: 42px; letter-spacing: -1.5px; font-weight: 900; color: var(--navy); }
+.section-subtitle { max-width: 760px; margin: 12px auto 46px; font-size: 21px; line-height: 1.45; color: #102d52; }
+.coverage-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.coverage-card { padding: 6px 44px 12px; min-height: 260px; }
+.coverage-card + .coverage-card { border-left: 1px solid #cad6e1; }
+.line-icon { height: 92px; display: grid; place-items: center; color: #1067bd; }
+.coverage-card h3 { margin: 17px 0 12px; font-size: 24px; }
+.coverage-card p { margin: 0; font-size: 18px; line-height: 1.45; color: #193653; }
+
+.final-box {
+  margin-top: 28px;
+  min-height: 220px;
+  border-radius: 18px;
+  background: linear-gradient(110deg, #eff7ff, #f9fcff);
+  display: grid;
+  grid-template-columns: 1fr 1.12fr 1fr;
+  align-items: center;
+  padding: 28px 35px;
+}
+.final-copy { text-align: left; }
+.final-copy h2 { margin: 0 0 13px; font-size: 37px; line-height: 1.08; }
+.final-copy p { margin: 0; font-size: 19px; line-height: 1.42; }
+.final-cta-wrap { padding: 0 28px; }
+.final-cta {
+  min-height: 118px; border-radius: 15px;
+  background: linear-gradient(135deg, #ff8b00, #f96700);
+  color: #fff; display: flex; align-items: center; justify-content: center; gap: 23px;
+  text-decoration: none;
+}
+.final-cta strong { font-size: 31px; display: block; line-height: 1.05; }
+.final-cta span { font-size: 26px; display: block; font-weight: 800; margin-top: 8px; }
+.obligation {
+  border-left: 1px solid #a9bfd3;
+  min-height: 150px; padding-left: 28px;
+  display: grid; grid-template-columns: 54px 1fr; gap: 19px;
+  align-items: start; text-align: left;
+}
+.obligation h3 { margin: 2px 0 10px; font-size: 21px; }
+.obligation p { margin: 0; font-size: 17px; line-height: 1.45; color: #173651; }
+
+.footer { background: linear-gradient(100deg, #062d59, #003a72); color: #fff; }
+.footer-inner {
+  min-height: 168px;
+  display: grid;
+  grid-template-columns: 1.15fr 1.5fr 1fr;
+  align-items: center;
+  gap: 35px;
+}
+.footer-brand .brand-name { color: white; font-size: 38px; letter-spacing: -2px; }
+.footer-brand img { width: 65px; height: 65px; }
+.footer-brand small { display: block; margin-top: 14px; font-size: 15px; }
+.footer-links { display: flex; justify-content: center; gap: 55px; }
+.footer-links a { text-decoration: none; font-size: 16px; }
+.footer-links a:hover { text-decoration: underline; }
+.privacy-note { display: grid; grid-template-columns: 46px 1fr; gap: 18px; align-items: center; }
+.privacy-note p { margin: 0; font-size: 16px; line-height: 1.5; }
+
+.mobile-call {
+  display: none; position: fixed; left: 14px; right: 14px; bottom: 12px; z-index: 30;
+  min-height: 62px; align-items: center; justify-content: center; gap: 12px;
+  border-radius: 13px; background: linear-gradient(135deg, #ff8b00, #f96700);
+  color: #fff; text-decoration: none; font-size: 19px; font-weight: 900;
+  box-shadow: 0 10px 30px rgba(0,0,0,.26);
+}
+
+.legal-page { min-height: 100vh; background: #f2f7fb; }
+.legal-header { background: #fff; border-bottom: 1px solid #dce6ef; }
+.legal-header .header { min-height: 92px; }
+.legal-header .brand img { width: 64px; height: 64px; }
+.legal-header .brand-name { font-size: 38px; letter-spacing: -2px; }
+.legal-wrap {
+  width: min(920px, calc(100% - 40px)); margin: 46px auto;
+  padding: 46px; background: #fff; border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(2,45,89,.08);
+}
+.legal-wrap h1 { margin-top: 0; font-size: 43px; }
+.legal-wrap h2 { margin-top: 31px; font-size: 24px; }
+.legal-wrap p, .legal-wrap li { color: #344b60; line-height: 1.72; font-size: 16px; }
+.legal-wrap a { color: #0b65bd; }
+.back-link { display: inline-flex; margin-top: 26px; color: #0b65bd; font-weight: 700; text-decoration: none; }
+
+@media (max-width: 980px) {
+  .container { width: min(100% - 36px, 850px); }
+  .header { min-height: 96px; }
+  .brand img { width: 67px; height: 67px; }
+  .brand-name { font-size: 42px; }
+  .header-call small { font-size: 15px; }
+  .header-call strong { font-size: 25px; }
+  .hero {
+    min-height: auto;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.88) 54%, rgba(255,255,255,.2) 76%),
+      url("assets/teddy-drive-hero.jpg") center bottom / 100% auto no-repeat;
+    padding-bottom: 420px;
+  }
+  .hero-copy { width: 100%; max-width: 650px; }
+  .benefit-grid { grid-template-columns: 1fr; padding: 22px 0; }
+  .benefit { padding: 25px 8px; }
+  .benefit + .benefit { border-left: 0; border-top: 1px solid rgba(255,255,255,.24); }
+  .coverage-grid { grid-template-columns: 1fr; }
+  .coverage-card { padding: 30px 25px; }
+  .coverage-card + .coverage-card { border-left: 0; border-top: 1px solid #cad6e1; }
+  .final-box { grid-template-columns: 1fr; gap: 26px; text-align: center; }
+  .final-copy { text-align: center; }
+  .final-cta-wrap { padding: 0; width: 100%; }
+  .obligation { border-left: 0; border-top: 1px solid #a9bfd3; padding: 28px 0 0; min-height: 0; }
+  .footer-inner { grid-template-columns: 1fr; padding: 34px 0; text-align: center; }
+  .footer-brand .brand { justify-content: center; }
+  .footer-links { flex-wrap: wrap; gap: 22px 38px; }
+  .privacy-note { max-width: 350px; margin: auto; text-align: left; }
+}
+@media (max-width: 650px) {
+  body { padding-bottom: 80px; }
+  .container { width: min(100% - 28px, 560px); }
+  .header-inner { justify-content: center; }
+  .header-call { display: none; }
+  .brand img { width: 59px; height: 59px; }
+  .brand-name { font-size: 36px; letter-spacing: -2px; }
+  .hero { padding-bottom: 320px; background-size: auto 350px; }
+  .hero-inner { padding-top: 38px; }
+  .hero h1 { font-size: 43px; letter-spacing: -1.5px; }
+  .hero-lead { font-size: 20px; }
+  .check-list li { font-size: 17px; }
+  .main-cta { min-height: 92px; gap: 15px; }
+  .main-cta .cta-icon { width: 45px; height: 45px; }
+  .main-cta strong { font-size: 28px; }
+  .main-cta span { font-size: 22px; }
+  .security { margin-left: 7px; }
+  .benefit { grid-template-columns: 74px 1fr; gap: 17px; }
+  .benefit-icon { width: 70px; height: 70px; }
+  .benefit h3 { font-size: 20px; }
+  .benefit p { font-size: 16px; }
+  .section-title { font-size: 34px; }
+  .section-subtitle { font-size: 18px; }
+  .final-box { padding: 28px 20px; }
+  .final-copy h2 { font-size: 31px; }
+  .final-cta strong { font-size: 24px; }
+  .final-cta span { font-size: 21px; }
+  .mobile-call { display: flex; }
+  .legal-wrap { padding: 28px 22px; margin: 24px auto; }
+  .legal-wrap h1 { font-size: 34px; }
+}
