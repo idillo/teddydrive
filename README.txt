@@ -1,4 +1,5 @@
-Balanced hero version.
-Headline text and size unchanged.
-Header reduced, image moved up/right and reduced, CTA shortened and raised.
+FINAL HTML PROJECT
+Tailwind only. No styles.css.
+Headline preserved exactly.
+Angled blue car hero asset included.
 Phone: 1-855-629-1872 / tel:18556291872
