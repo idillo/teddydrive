@@ -13,6 +13,6 @@
   .field { @apply block w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base outline-none transition focus:border-teddyBlue focus:ring-4 focus:ring-blue-100; }
   .field-label { @apply text-base font-extrabold text-slate-800; }
   .choice-card { @apply relative cursor-pointer; }
-  .choice-card input { @apply peer sr-only; }
+  .choice-card input { @apply sr-only; }
   .choice-card span { @apply flex min-h-14 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-center font-extrabold text-slate-700 transition peer-checked:border-teddyBlue peer-checked:bg-blue-50 peer-checked:text-teddyBlue peer-focus-visible:ring-4 peer-focus-visible:ring-blue-100; }
 }
