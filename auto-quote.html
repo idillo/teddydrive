@@ -96,34 +96,22 @@
       { section:'vehicle', key:'model', type:'text', title:`What's the model of your vehicle?`, placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off' },
       { section:'vehicle', key:'owned_or_leased', type:'choice', title:'How is this vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3' },
       { section:'vehicle', key:'use', type:'choice', title:'What is the primary use?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2' },
-      { section:'vehicle', key:'distance', type:'choice', title:'How far is your one-way commute?', choices:['Under 5 miles','5–9 miles','10–19 miles','20–39 miles','40+ miles'], grid:'grid-cols-1 sm:grid-cols-2', when:a => a.use === 'Commute to work' },
-      { section:'vehicle', key:'annual_distance', type:'choice', title:'About how many miles do you drive each year?', choices:['Under 5,000','5,000–9,999','10,000–14,999','15,000–19,999','20,000+'], grid:'grid-cols-1 sm:grid-cols-2' },
       { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add another vehicle?', sub:'Multi-vehicle households may qualify for additional options.', choices:['Yes','No'] },
       { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'model_2', type:'text', title:"What's the model of your second vehicle?", placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off', when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'zip', type:'text', title:'Where do you park your vehicle?', sub:'Enter your ZIP code to see options available in your area.', placeholder:'5-digit ZIP code', inputmode:'numeric', autocomplete:'postal-code', validate:v => /^\d{5}$/.test(v), error:'Enter a valid 5-digit ZIP code.' },
+      { section:'vehicle', key:'use_2', type:'choice', title:'What is the primary use for your second vehicle?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2', when:a => a.second_vehicle === 'Yes' },
       { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
-      { section:'coverage', key:'months_insured', type:'choice', title:'How long have you been continuously insured?', choices:['Less than 6 months','6–11 months','1–2 years','3–5 years','More than 5 years'], grid:'grid-cols-1 sm:grid-cols-2', when:a => a.has_coverage === 'Yes' },
-      { section:'coverage', key:'expiration_date', type:'date', title:'When does your current policy expire?', when:a => a.has_coverage === 'Yes' },
-      { section:'coverage', key:'preferred_coverage', type:'choice', title:'What level of coverage would you like?', choices:['State minimum','Standard','Preferred','Premium','Not sure'], grid:'grid-cols-1 sm:grid-cols-2' },
-      { section:'coverage', key:'deductible', type:'choice', title:'Preferred collision deductible?', choices:['$250','$500','$1,000','$2,000','Not sure'], grid:'grid-cols-2 sm:grid-cols-3' },
-      { section:'driver', key:'gender', type:'choice', title:'What is your gender?', choices:['Male','Female'], note:'Insurance options may use this information where permitted by law.' },
+      { section:'driver', key:'gender', type:'choice', title:'What is your gender?', choices:['Male','Female'] },
       { section:'driver', key:'marital_status', type:'choice', title:'What is your marital status?', choices:['Single','Married','Divorced','Separated','Widowed','Domestic partner'], grid:'grid-cols-2 sm:grid-cols-3' },
       { section:'driver', key:'highest_level', type:'choice', title:'What is your highest education level?', choices:['High school','Some college','Associate degree',"Bachelor's degree",'Graduate degree','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
       { section:'driver', key:'occupation', type:'choice', title:'What best describes your occupation?', choices:['Employed','Self-employed','Retired','Student','Homemaker','Unemployed','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
       { section:'driver', key:'credit_rating', type:'choice', title:'How would you estimate your credit?', sub:"Most people select “Good.” This does not affect your credit score.", choices:['Excellent','Good','Average','Poor or fair'], grid:'grid-cols-2' },
       { section:'driver', key:'ticket_count', type:'choice', title:'Tickets in the past three years?', choices:['0','1','2','3+'], grid:'grid-cols-2 sm:grid-cols-4' },
-      { section:'driver', key:'ticket_date', type:'date', title:'When was your most recent ticket?', when:a => a.ticket_count && a.ticket_count !== '0' },
-      { section:'driver', key:'ticket_description', type:'choice', title:'What was the ticket for?', choices:['Speeding','Failure to stop','Failure to yield','Illegal lane change','No insurance','Other Ticket'], grid:'grid-cols-2 sm:grid-cols-3', when:a => a.ticket_count && a.ticket_count !== '0' },
       { section:'driver', key:'license_status', type:'choice', title:'Do you have an active driver’s license?', choices:['Yes','No'] },
-      { section:'driver', key:'driver_state', type:'select', title:'Which state issued your license?', options:'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ') },
       { section:'driver', key:'at_fault_accident', type:'choice', title:'Any at-fault accidents in the past three years?', choices:['Yes','No'] },
-      { section:'driver', key:'accident_date', type:'date', title:'When was your most recent at-fault accident?', when:a => a.at_fault_accident === 'Yes' },
       { section:'driver', key:'dui', type:'choice', title:'Any DUI convictions in the past three years?', choices:['Yes','No'] },
-      { section:'driver', key:'dui_date', type:'date', title:'When was your most recent DUI conviction?', when:a => a.dui === 'Yes' },
-      { section:'driver', key:'sr22', type:'choice', title:'Do you currently need an SR-22?', choices:['Yes','No','Not sure'], grid:'grid-cols-1 sm:grid-cols-3' },
       { section:'driver', key:'birthdate', type:'date', title:"What's your date of birth?", validate:v => { const d=new Date(v), now=new Date(); let age=now.getFullYear()-d.getFullYear(); if(now < new Date(now.getFullYear(),d.getMonth(),d.getDate())) age--; return age >= 18 && age <= 100; }, error:'Enter a valid birthdate for a driver age 18 or older.' },
       { section:'driver', key:'own_or_rent', type:'choice', title:'Do you own or rent your home?', choices:['Own','Rent','Other'] },
       { section:'driver', key:'bundle_interest', type:'choice', title:'Interested in bundling home and auto?', sub:'Bundling may provide additional savings.', choices:['Yes','No'] },
@@ -158,13 +146,13 @@
       return `<div class="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2"><input id="first-name" class="quote-field" autocomplete="given-name" placeholder="First name" value="${esc(answers.first_name||'')}"><input id="last-name" class="quote-field" autocomplete="family-name" placeholder="Last name" value="${esc(answers.last_name||'')}"><p id="field-error" class="min-h-5 text-sm font-bold text-red-600 sm:col-span-2"></p><button type="button" id="continue-button" class="quote-primary sm:col-span-2">Continue →</button></div>`;
     }
     function addressMarkup() {
-      return `<div class="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-3"><input id="street" class="quote-field col-span-2" autocomplete="street-address" placeholder="Street address" value="${esc(answers.address||'')}"><input id="city" class="quote-field" autocomplete="address-level2" placeholder="City" value="${esc(answers.city||'')}"><select id="state" class="quote-field" autocomplete="address-level1"><option value="">State</option>${'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ').map(s=>`<option ${answers.state===s?'selected':''}>${s}</option>`).join('')}</select><p id="field-error" class="col-span-2 min-h-5 text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary col-span-2">Continue →</button></div>`;
+      return `<div class="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-3"><input id="street" class="quote-field col-span-2" autocomplete="street-address" placeholder="Street address" value="${esc(answers.address||'')}"><input id="city" class="quote-field" autocomplete="address-level2" placeholder="City" value="${esc(answers.city||'')}"><select id="state" class="quote-field" autocomplete="address-level1"><option value="">State</option>${'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ').map(s=>`<option ${answers.state===s?'selected':''}>${s}</option>`).join('')}</select><input id="address-zip" class="quote-field col-span-2" autocomplete="postal-code" inputmode="numeric" maxlength="5" placeholder="ZIP code" value="${esc(answers.zip||'')}"><p id="field-error" class="col-span-2 min-h-5 text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary col-span-2">Continue →</button></div>`;
     }
     function reviewMarkup() {
       const vehicle = [answers.year, answers.make, answers.model].filter(Boolean).join(' ');
       const rows = [
         ['Vehicle',vehicle],['Insurance',answers.has_coverage==='Yes' ? answers.former_insurer : 'Not currently insured'],
-        ['Coverage',answers.preferred_coverage],['Driver',`${answers.first_name||''} ${answers.last_name||''}`.trim()],
+        ['Driver',`${answers.first_name||''} ${answers.last_name||''}`.trim()],
         ['Address',[answers.address,answers.city,answers.state,answers.zip].filter(Boolean).join(', ')],
         ['Email',answers.email],['Phone',answers.phone]
       ];
@@ -220,7 +208,8 @@
           answers.address = document.getElementById('street').value.trim();
           answers.city = document.getElementById('city').value.trim();
           answers.state = document.getElementById('state').value;
-          if (!answers.address || !answers.city || !answers.state) return showError('Enter your complete address.');
+          answers.zip = document.getElementById('address-zip').value.replace(/\D/g,'').slice(0,5);
+          if (!answers.address || !answers.city || !answers.state || !/^\d{5}$/.test(answers.zip)) return showError('Enter your complete address and 5-digit ZIP code.');
         } else {
           const input = document.getElementById('active-input'); value = input.value.trim();
           if (step.type === 'phone') {
@@ -270,7 +259,7 @@
     });
 
     const params = new URLSearchParams(location.search);
-    const allowedPrefill = ['zip','year','make','model','has_coverage','former_insurer'];
+    const allowedPrefill = ['year','make','model','has_coverage','former_insurer'];
     allowedPrefill.forEach(key => { if(params.get(key)) answers[key]=params.get(key).slice(0,100); });
     render();
   })();
