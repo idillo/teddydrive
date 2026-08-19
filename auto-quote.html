@@ -9,36 +9,34 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/output.css">
 </head>
-<body class="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 antialiased">
+<body class="min-h-screen overflow-x-hidden bg-[#d8eaf2] text-slate-900 antialiased">
   <div class="flex min-h-[100svh] flex-col">
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-11 w-auto"></a>
-        <div class="flex items-center gap-2 text-xs font-bold text-slate-500 sm:text-sm">
-          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
-          Secure quote request
-        </div>
+    <header class="bg-[#071f46]">
+      <div class="mx-auto flex h-16 items-center justify-center px-4 sm:h-20">
+        <a href="/" aria-label="TeddyDrive home" class="text-2xl font-black tracking-tight text-white sm:text-3xl">Teddy<span class="text-teddyOrange">Drive</span></a>
       </div>
-      <div class="h-2 bg-slate-100" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
-        <div id="progress-bar" class="h-full rounded-r-full bg-gradient-to-r from-teddyBlue to-teddyOrange transition-all duration-500" style="width:3%"></div>
+      <div class="h-1.5 bg-[#bed9e6]" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
+        <div id="progress-bar" class="h-full bg-teddyOrange transition-all duration-500" style="width:3%"></div>
       </div>
     </header>
 
-    <main class="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-3 sm:px-6 sm:py-5">
-      <nav aria-label="Quote sections" class="mx-auto mb-3 grid w-full max-w-3xl grid-cols-4 gap-1 rounded-2xl bg-white p-1.5 text-center text-[10px] font-black uppercase tracking-wide text-slate-400 shadow-sm sm:text-xs">
-        <span data-section-tab="vehicle" class="rounded-xl bg-teddyNavy px-2 py-2 text-white">Vehicle</span>
-        <span data-section-tab="coverage" class="rounded-xl px-2 py-2">Coverage</span>
-        <span data-section-tab="driver" class="rounded-xl px-2 py-2">Driver</span>
-        <span data-section-tab="contact" class="rounded-xl px-2 py-2">Contact</span>
+    <main class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden px-3 py-3 sm:px-6 sm:py-5">
+      <div aria-hidden="true" class="pointer-events-none absolute -bottom-36 -left-28 h-72 w-72 rounded-full bg-white/45 sm:h-96 sm:w-96"></div>
+      <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 -right-28 h-80 w-80 rounded-full bg-white/45 sm:h-[26rem] sm:w-[26rem]"></div>
+      <nav aria-label="Quote sections" class="relative z-10 mx-auto mb-3 grid w-full max-w-6xl grid-cols-4 gap-2 text-center text-[10px] font-bold text-slate-500 sm:mb-5 sm:gap-8 sm:text-base">
+        <span data-section-tab="vehicle" class="rounded-lg border-b-4 border-teddyOrange bg-[#071f46] px-1 py-3 text-white sm:py-4">Vehicles</span>
+        <span data-section-tab="coverage" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Auto Coverage</span>
+        <span data-section-tab="driver" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Policy &amp; Driver</span>
+        <span data-section-tab="contact" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Final Step</span>
       </nav>
 
-      <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft">
-        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-2.5 sm:px-8">
-          <button id="back-button" type="button" class="invisible inline-flex min-h-10 items-center gap-1 rounded-xl px-2 font-extrabold text-teddyBlue hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
-          <p class="text-sm font-bold text-slate-500"><span id="step-counter">1</span> of <span id="step-total">1</span></p>
+      <section class="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col overflow-hidden rounded-3xl bg-white shadow-[0_8px_30px_rgba(8,46,95,.08)]">
+        <div class="absolute left-5 top-4 z-20 sm:left-8 sm:top-6">
+          <button id="back-button" type="button" class="invisible inline-flex min-h-10 items-center gap-1 rounded-xl px-2 font-bold text-teddyBlue hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
+          <span class="hidden"><span id="step-counter">1</span><span id="step-total">1</span></span>
         </div>
 
-        <form id="quote-form" class="flex min-h-[430px] flex-col justify-center px-5 py-5 sm:min-h-[470px] sm:px-10 sm:py-7" novalidate>
+        <form id="quote-form" class="flex min-h-[440px] flex-1 flex-col justify-center px-5 py-14 sm:min-h-[500px] sm:px-16 sm:py-16" novalidate>
           <input type="hidden" name="lead_source" value="teddydrive_auto_quote">
           <input type="hidden" name="landing_page" value="auto-quote">
           <input type="hidden" name="consent_timestamp" id="consent_timestamp">
@@ -49,7 +47,7 @@
           <div id="question-stage" aria-live="polite"></div>
         </form>
 
-        <div id="success-panel" class="hidden min-h-[430px] place-items-center px-6 py-10 text-center sm:min-h-[470px]">
+        <div id="success-panel" class="hidden min-h-[440px] flex-1 place-items-center px-6 py-10 text-center sm:min-h-[500px]">
           <div>
             <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-4xl font-black text-emerald-700">✓</div>
             <h1 class="mt-6 text-3xl font-black text-teddyNavy sm:text-4xl">Your request is on its way</h1>
@@ -58,20 +56,16 @@
         </div>
       </section>
 
-      <div class="mx-auto mt-3 flex w-full max-w-3xl items-center justify-center gap-5 text-center text-xs font-semibold text-slate-500 sm:text-sm">
-        <span>✓ No obligation</span><span>✓ Takes about 3 minutes</span><span class="hidden sm:inline">✓ Your information is protected</span>
-      </div>
     </main>
 
-    <footer class="px-4 py-3 text-center text-[11px] leading-5 text-slate-500">
-      TeddyDrive.com is an independent marketing website operated by Idillo Inc. and is not an insurance carrier.<br class="sm:hidden">
-      <a href="/privacy.html" class="underline hover:text-teddyBlue">Privacy</a> · <a href="/terms.html" class="underline hover:text-teddyBlue">Terms</a> · <a href="/privacy.html#do-not-sell" class="underline hover:text-teddyBlue">Do Not Sell My Info</a>
+    <footer class="relative z-20 border-t border-slate-200 bg-white px-3 py-2 text-center text-[10px] leading-4 text-slate-500 sm:text-xs">
+      © 2026 Idillo Inc. · <a href="/terms.html" class="hover:text-teddyBlue">Terms &amp; Disclosures</a> · <a href="/privacy.html" class="hover:text-teddyBlue">Privacy Policy</a> · <a href="/privacy.html#do-not-sell" class="hover:text-teddyBlue">Do Not Sell My Info</a>
     </footer>
   </div>
 
   <script>
   (() => {
-    const ENDPOINT = 'https://forms.teddydrive.com/submit.php';
+    const ENDPOINT = '/api/auto-quote';
     const form = document.getElementById('quote-form');
     const stage = document.getElementById('question-stage');
     const backButton = document.getElementById('back-button');
@@ -96,7 +90,6 @@
     const years = Array.from({length: 31}, (_, i) => String(new Date().getFullYear() + 1 - i));
 
     const steps = [
-      { section:'vehicle', key:'zip', type:'text', title:'Where do you park your vehicle?', sub:'Your ZIP code helps us find options available in your area.', placeholder:'5-digit ZIP code', inputmode:'numeric', autocomplete:'postal-code', validate:v => /^\d{5}$/.test(v), error:'Enter a valid 5-digit ZIP code.' },
       { section:'vehicle', key:'has_coverage', type:'choice', title:'Are you currently insured?', choices:['Yes','No'] },
       { section:'vehicle', key:'year', type:'choice', title:"What's the year of your vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true },
       { section:'vehicle', key:'make', type:'logo', title:"What's the make of your vehicle?", choices:makes },
@@ -110,6 +103,7 @@
       { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'model_2', type:'text', title:"What's the model of your second vehicle?", placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off', when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'zip', type:'text', title:'Where do you park your vehicle?', sub:'Enter your ZIP code to see options available in your area.', placeholder:'5-digit ZIP code', inputmode:'numeric', autocomplete:'postal-code', validate:v => /^\d{5}$/.test(v), error:'Enter a valid 5-digit ZIP code.' },
       { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
       { section:'coverage', key:'months_insured', type:'choice', title:'How long have you been continuously insured?', choices:['Less than 6 months','6–11 months','1–2 years','3–5 years','More than 5 years'], grid:'grid-cols-1 sm:grid-cols-2', when:a => a.has_coverage === 'Yes' },
       { section:'coverage', key:'expiration_date', type:'date', title:'When does your current policy expire?', when:a => a.has_coverage === 'Yes' },
@@ -121,10 +115,14 @@
       { section:'driver', key:'occupation', type:'choice', title:'What best describes your occupation?', choices:['Employed','Self-employed','Retired','Student','Homemaker','Unemployed','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
       { section:'driver', key:'credit_rating', type:'choice', title:'How would you estimate your credit?', sub:"Most people select “Good.” This does not affect your credit score.", choices:['Excellent','Good','Average','Poor or fair'], grid:'grid-cols-2' },
       { section:'driver', key:'ticket_count', type:'choice', title:'Tickets in the past three years?', choices:['0','1','2','3+'], grid:'grid-cols-2 sm:grid-cols-4' },
+      { section:'driver', key:'ticket_date', type:'date', title:'When was your most recent ticket?', when:a => a.ticket_count && a.ticket_count !== '0' },
+      { section:'driver', key:'ticket_description', type:'choice', title:'What was the ticket for?', choices:['Speeding','Failure to stop','Failure to yield','Illegal lane change','No insurance','Other Ticket'], grid:'grid-cols-2 sm:grid-cols-3', when:a => a.ticket_count && a.ticket_count !== '0' },
       { section:'driver', key:'license_status', type:'choice', title:'Do you have an active driver’s license?', choices:['Yes','No'] },
       { section:'driver', key:'driver_state', type:'select', title:'Which state issued your license?', options:'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ') },
       { section:'driver', key:'at_fault_accident', type:'choice', title:'Any at-fault accidents in the past three years?', choices:['Yes','No'] },
+      { section:'driver', key:'accident_date', type:'date', title:'When was your most recent at-fault accident?', when:a => a.at_fault_accident === 'Yes' },
       { section:'driver', key:'dui', type:'choice', title:'Any DUI convictions in the past three years?', choices:['Yes','No'] },
+      { section:'driver', key:'dui_date', type:'date', title:'When was your most recent DUI conviction?', when:a => a.dui === 'Yes' },
       { section:'driver', key:'sr22', type:'choice', title:'Do you currently need an SR-22?', choices:['Yes','No','Not sure'], grid:'grid-cols-1 sm:grid-cols-3' },
       { section:'driver', key:'birthdate', type:'date', title:"What's your date of birth?", validate:v => { const d=new Date(v), now=new Date(); let age=now.getFullYear()-d.getFullYear(); if(now < new Date(now.getFullYear(),d.getMonth(),d.getDate())) age--; return age >= 18 && age <= 100; }, error:'Enter a valid birthdate for a driver age 18 or older.' },
       { section:'driver', key:'own_or_rent', type:'choice', title:'Do you own or rent your home?', choices:['Own','Rent','Other'] },
@@ -142,11 +140,12 @@
     function activeSteps() { return steps.filter(s => !s.when || s.when(answers)); }
     function esc(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
     function heading(step) {
-      return `<div class="text-center"><p class="text-xs font-black uppercase tracking-[.18em] text-teddyBlue">${esc(step.section)}</p><h1 class="mx-auto mt-2 max-w-2xl text-2xl font-black leading-tight text-teddyNavy sm:text-4xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-2 max-w-xl text-sm font-semibold leading-6 text-slate-500 sm:text-base">${esc(step.sub)}</p>` : ''}</div>`;
+      return `<div class="text-center"><h1 class="mx-auto max-w-3xl text-2xl font-black leading-tight text-[#071a39] sm:text-4xl lg:text-5xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-3 max-w-xl text-sm font-medium leading-6 text-slate-500 sm:text-lg">${esc(step.sub)}</p>` : ''}</div>`;
     }
     function choiceMarkup(step) {
       const grid = step.grid || 'grid-cols-2';
-      return `<div class="mt-6 grid ${grid} gap-3">${step.choices.map(choice => `<button type="button" class="quote-choice ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${esc(choice)}</button>`).join('')}</div>`;
+      const binary = step.choices.length === 2 && step.choices[0] === 'Yes' && step.choices[1] === 'No';
+      return `<div class="mx-auto mt-7 grid w-full ${grid} gap-4 sm:mt-10 sm:max-w-4xl sm:gap-8">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${binary?`<span class="quote-answer-icon ${choice==='Yes'?'bg-[#82c879]':'bg-[#e47f82]'}">${choice==='Yes'?'✓':'×'}</span>`:''}<span>${esc(choice)}</span></button>`).join('')}</div>`;
     }
     function logoMarkup(step) {
       return `<div class="mt-5 grid max-h-[310px] grid-cols-2 gap-2 overflow-y-auto p-1 sm:grid-cols-3">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-18 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-8 w-10 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-sm">⋯</span>`}<span>${esc(label)}</span></button>`).join('')}</div>`;
@@ -185,7 +184,8 @@
       backButton.classList.toggle('invisible', index === 0);
       tabs.forEach(tab => {
         const active = tab.dataset.sectionTab === step.section;
-        tab.classList.toggle('bg-teddyNavy', active); tab.classList.toggle('text-white', active);
+        tab.classList.toggle('bg-[#071f46]', active); tab.classList.toggle('text-white', active);
+        tab.classList.toggle('border-teddyOrange', active); tab.classList.toggle('border-transparent', !active);
       });
 
       let body = '';
@@ -246,10 +246,17 @@
       button.disabled = true; button.textContent = 'Submitting…';
       document.getElementById('consent_timestamp').value = new Date().toISOString();
       document.getElementById('consent_text').value = document.getElementById('consent-copy').innerText;
-      const data = new FormData(form);
-      Object.entries(answers).forEach(([key,value]) => data.set(key,value));
+      answers.consent_timestamp = document.getElementById('consent_timestamp').value;
+      answers.consent_text = document.getElementById('consent_text').value;
+      answers.xxTrustedFormCertUrl = document.getElementById('xxTrustedFormCertUrl').value;
+      answers.Jornaya_LeadID = document.getElementById('Jornaya_LeadID').value;
+      answers.page_url = location.href.split('?')[0];
       try {
-        const response = await fetch(ENDPOINT,{method:'POST',body:data,mode:'cors'});
+        const response = await fetch(ENDPOINT,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(answers)
+        });
         const result = await response.json();
         if(!response.ok || !result.success) throw new Error(result.message || 'Submission failed');
         form.classList.add('hidden');
@@ -269,6 +276,21 @@
   })();
   </script>
 
-  <!-- TRUSTEDFORM/JORNAYA: add the account-approved certification scripts before paid traffic. -->
+  <!-- TrustedForm -->
+  <script type="text/javascript">
+    (function() {
+      var tf = document.createElement('script');
+      tf.type = 'text/javascript';
+      tf.async = true;
+      tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
+        '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
+        new Date().getTime() + Math.random();
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s);
+    })();
+  </script>
+  <noscript>
+    <img src="https://api.trustedform.com/ns.gif" alt="" width="1" height="1">
+  </noscript>
+  <!-- End TrustedForm -->
 </body>
 </html>
