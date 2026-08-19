@@ -9,34 +9,30 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/output.css">
 </head>
-<body class="min-h-screen overflow-x-hidden bg-[#d8eaf2] text-slate-900 antialiased">
+<body class="min-h-screen overflow-x-hidden bg-[#f4f9fd] text-slate-900 antialiased">
   <div class="flex min-h-[100svh] flex-col">
-    <header class="bg-[#071f46]">
-      <div class="mx-auto flex h-16 items-center justify-center px-4 sm:h-20">
-        <a href="/" aria-label="TeddyDrive home" class="text-2xl font-black tracking-tight text-white sm:text-3xl">Teddy<span class="text-teddyOrange">Drive</span></a>
-      </div>
-      <div class="h-1.5 bg-[#bed9e6]" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
-        <div id="progress-bar" class="h-full bg-teddyOrange transition-all duration-500" style="width:3%"></div>
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex h-20 max-w-6xl items-center justify-center px-4 sm:h-24 sm:justify-start">
+        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-14 w-auto sm:h-16"></a>
       </div>
     </header>
 
-    <main class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden px-3 py-3 sm:px-6 sm:py-5">
-      <div aria-hidden="true" class="pointer-events-none absolute -bottom-36 -left-28 h-72 w-72 rounded-full bg-white/45 sm:h-96 sm:w-96"></div>
-      <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 -right-28 h-80 w-80 rounded-full bg-white/45 sm:h-[26rem] sm:w-[26rem]"></div>
-      <nav aria-label="Quote sections" class="relative z-10 mx-auto mb-3 grid w-full max-w-6xl grid-cols-4 gap-2 text-center text-[10px] font-bold text-slate-500 sm:mb-5 sm:gap-8 sm:text-base">
-        <span data-section-tab="vehicle" class="rounded-lg border-b-4 border-teddyOrange bg-[#071f46] px-1 py-3 text-white sm:py-4">Vehicles</span>
-        <span data-section-tab="coverage" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Auto Coverage</span>
-        <span data-section-tab="driver" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Policy &amp; Driver</span>
-        <span data-section-tab="contact" class="rounded-lg border-b-4 border-transparent px-1 py-3 sm:py-4">Final Step</span>
-      </nav>
+    <main class="flex min-h-0 w-full flex-1 flex-col px-4 py-4 sm:px-6 sm:py-6">
+      <div class="mx-auto mb-4 w-full max-w-5xl sm:mb-5">
+        <div class="mb-2 flex items-center justify-between text-xs font-extrabold text-slate-500 sm:text-sm"><span>Quote progress</span><span id="progress-number">3%</span></div>
+        <div class="h-2 overflow-hidden rounded-full bg-blue-100" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
+          <div id="progress-bar" class="h-full rounded-full bg-teddyOrange transition-all duration-500" style="width:3%"></div>
+        </div>
+      </div>
 
-      <section class="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col overflow-hidden rounded-3xl bg-white shadow-[0_8px_30px_rgba(8,46,95,.08)]">
+      <section class="relative mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-soft">
+        <div class="h-2 w-full bg-gradient-to-r from-teddyBlue via-blue-400 to-teddyOrange"></div>
         <div class="absolute left-5 top-4 z-20 sm:left-8 sm:top-6">
           <button id="back-button" type="button" class="invisible inline-flex min-h-10 items-center gap-1 rounded-xl px-2 font-bold text-teddyBlue hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
           <span class="hidden"><span id="step-counter">1</span><span id="step-total">1</span></span>
         </div>
 
-        <form id="quote-form" class="flex min-h-[440px] flex-1 flex-col justify-center px-5 py-14 sm:min-h-[500px] sm:px-16 sm:py-16" novalidate>
+        <form id="quote-form" class="flex min-h-[420px] flex-1 flex-col justify-center px-5 py-14 sm:min-h-[500px] sm:px-16 sm:py-16" novalidate>
           <input type="hidden" name="lead_source" value="teddydrive_auto_quote">
           <input type="hidden" name="landing_page" value="auto-quote">
           <input type="hidden" name="consent_timestamp" id="consent_timestamp">
@@ -58,7 +54,7 @@
 
     </main>
 
-    <footer class="relative z-20 border-t border-slate-200 bg-white px-3 py-2 text-center text-[10px] leading-4 text-slate-500 sm:text-xs">
+    <footer class="border-t border-slate-200 bg-white px-3 py-2 text-center text-[10px] leading-4 text-slate-500 sm:text-xs">
       © 2026 Idillo Inc. · <a href="/terms.html" class="hover:text-teddyBlue">Terms &amp; Disclosures</a> · <a href="/privacy.html" class="hover:text-teddyBlue">Privacy Policy</a> · <a href="/privacy.html#do-not-sell" class="hover:text-teddyBlue">Do Not Sell My Info</a>
     </footer>
   </div>
@@ -70,6 +66,7 @@
     const stage = document.getElementById('question-stage');
     const backButton = document.getElementById('back-button');
     const progressBar = document.getElementById('progress-bar');
+    const progressNumber = document.getElementById('progress-number');
     const stepCounter = document.getElementById('step-counter');
     const tabs = [...document.querySelectorAll('[data-section-tab]')];
     const answers = {};
@@ -96,13 +93,14 @@
       { section:'vehicle', key:'model', type:'text', title:`What's the model of your vehicle?`, placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off' },
       { section:'vehicle', key:'owned_or_leased', type:'choice', title:'How is this vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3' },
       { section:'vehicle', key:'use', type:'choice', title:'What is the primary use?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2' },
-      { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add another vehicle?', sub:'Multi-vehicle households may qualify for additional options.', choices:['Yes','No'] },
+      { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add a second vehicle?', sub:'Save an additional 20%', choices:['Yes','No'] },
       { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'model_2', type:'text', title:"What's the model of your second vehicle?", placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off', when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'use_2', type:'choice', title:'What is the primary use for your second vehicle?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2', when:a => a.second_vehicle === 'Yes' },
       { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
+      { section:'coverage', key:'months_insured', type:'choice', title:'How long have you been continuously insured?', sub:'Five or more years may qualify you for better rates', choices:['Less than 1 year','1–2 years','3–4 years','5+ years'], grid:'grid-cols-2', when:a => a.has_coverage === 'Yes' },
       { section:'driver', key:'gender', type:'choice', title:'What is your gender?', choices:['Male','Female'] },
       { section:'driver', key:'marital_status', type:'choice', title:'What is your marital status?', choices:['Single','Married','Divorced','Separated','Widowed','Domestic partner'], grid:'grid-cols-2 sm:grid-cols-3' },
       { section:'driver', key:'highest_level', type:'choice', title:'What is your highest education level?', choices:['High school','Some college','Associate degree',"Bachelor's degree",'Graduate degree','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
@@ -114,7 +112,7 @@
       { section:'driver', key:'dui', type:'choice', title:'Any DUI convictions in the past three years?', choices:['Yes','No'] },
       { section:'driver', key:'birthdate', type:'date', title:"What's your date of birth?", validate:v => { const d=new Date(v), now=new Date(); let age=now.getFullYear()-d.getFullYear(); if(now < new Date(now.getFullYear(),d.getMonth(),d.getDate())) age--; return age >= 18 && age <= 100; }, error:'Enter a valid birthdate for a driver age 18 or older.' },
       { section:'driver', key:'own_or_rent', type:'choice', title:'Do you own or rent your home?', choices:['Own','Rent','Other'] },
-      { section:'driver', key:'bundle_interest', type:'choice', title:'Interested in bundling home and auto?', sub:'Bundling may provide additional savings.', choices:['Yes','No'] },
+      { section:'driver', key:'bundle_interest', type:'choice', title:'Would you like to bundle your auto and home insurance policies?', sub:'Drivers who bundle their policies save an average of 20%!', choices:['Yes','No'] },
       { section:'driver', key:'military', type:'choice', title:'Have you or your spouse served in the U.S. military?', choices:['Yes','No'] },
       { section:'contact', key:'name', type:'name', title:"What's your name?", sub:'Your information is secure and used to match available options.' },
       { section:'contact', key:'address', type:'address', title:"What's your current address?" },
@@ -128,12 +126,12 @@
     function activeSteps() { return steps.filter(s => !s.when || s.when(answers)); }
     function esc(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
     function heading(step) {
-      return `<div class="text-center"><h1 class="mx-auto max-w-3xl text-2xl font-black leading-tight text-[#071a39] sm:text-4xl lg:text-5xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-3 max-w-xl text-sm font-medium leading-6 text-slate-500 sm:text-lg">${esc(step.sub)}</p>` : ''}</div>`;
+      return `<div class="text-center"><h1 class="mx-auto max-w-3xl text-3xl font-black leading-tight text-teddyNavy sm:text-5xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-3 max-w-xl text-sm font-medium leading-6 text-slate-500 sm:text-lg">${esc(step.sub)}</p>` : ''}</div>`;
     }
     function choiceMarkup(step) {
       const grid = step.grid || 'grid-cols-2';
       const binary = step.choices.length === 2 && step.choices[0] === 'Yes' && step.choices[1] === 'No';
-      return `<div class="mx-auto mt-7 grid w-full ${grid} gap-4 sm:mt-10 sm:max-w-4xl sm:gap-8">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${binary?`<span class="quote-answer-icon ${choice==='Yes'?'bg-[#82c879]':'bg-[#e47f82]'}">${choice==='Yes'?'✓':'×'}</span>`:''}<span>${esc(choice)}</span></button>`).join('')}</div>`;
+      return `<div class="mx-auto mt-7 grid w-full ${grid} gap-4 sm:mt-10 sm:max-w-4xl sm:gap-6">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${binary?`<span class="quote-answer-icon ${choice==='Yes'?'bg-blue-100 text-teddyBlue':'bg-orange-100 text-teddyOrange'}">${choice==='Yes'?'✓':'×'}</span>`:''}<span>${esc(choice)}</span></button>`).join('')}</div>`;
     }
     function logoMarkup(step) {
       return `<div class="mt-5 grid max-h-[310px] grid-cols-2 gap-2 overflow-y-auto p-1 sm:grid-cols-3">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-18 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-8 w-10 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-sm">⋯</span>`}<span>${esc(label)}</span></button>`).join('')}</div>`;
@@ -166,6 +164,7 @@
       const step = visible[index];
       const pct = Math.max(3, Math.round(((index + 1) / visible.length) * 100));
       progressBar.style.width = pct + '%';
+      progressNumber.textContent = pct + '%';
       progressBar.parentElement.setAttribute('aria-valuenow', pct);
       stepCounter.textContent = index + 1;
       document.getElementById('step-total').textContent = visible.length;

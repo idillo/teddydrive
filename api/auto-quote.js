@@ -29,6 +29,14 @@ function normalizeKey(value) {
   return clean(value).toLowerCase();
 }
 
+function minimumInsuredSince(value) {
+  const years = { '1–2 years': 1, '3–4 years': 3, '5+ years': 5 }[clean(value)];
+  if (!years) return undefined;
+  const date = new Date();
+  date.setUTCFullYear(date.getUTCFullYear() - years);
+  return date.toISOString().slice(0, 10);
+}
+
 function firstHeader(value) {
   return clean(Array.isArray(value) ? value[0] : value).split(',')[0].trim();
 }
@@ -120,7 +128,7 @@ function buildData(body, includeIdentity) {
   if (normalizeKey(body.has_coverage) === 'yes' && clean(body.former_insurer)) {
     data.current_policy = compact({
       insurance_company: clean(body.former_insurer, 120),
-      expiration_date: clean(body.expiration_date, 10)
+      insured_since: minimumInsuredSince(body.months_insured)
     });
   }
 
