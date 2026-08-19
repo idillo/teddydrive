@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Compare Auto Insurance Options | TeddyDrive</title>
+  <meta name="description" content="Answer a few questions to review auto insurance options from participating licensed insurance providers.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/output.css">
+</head>
+<body class="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 antialiased">
+  <div class="flex min-h-[100svh] flex-col">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-11 w-auto"></a>
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-500 sm:text-sm">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+          Secure quote request
+        </div>
+      </div>
+      <div class="h-2 bg-slate-100" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
+        <div id="progress-bar" class="h-full rounded-r-full bg-gradient-to-r from-teddyBlue to-teddyOrange transition-all duration-500" style="width:3%"></div>
+      </div>
+    </header>
+
+    <main class="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-3 sm:px-6 sm:py-5">
+      <nav aria-label="Quote sections" class="mx-auto mb-3 grid w-full max-w-3xl grid-cols-4 gap-1 rounded-2xl bg-white p-1.5 text-center text-[10px] font-black uppercase tracking-wide text-slate-400 shadow-sm sm:text-xs">
+        <span data-section-tab="vehicle" class="rounded-xl bg-teddyNavy px-2 py-2 text-white">Vehicle</span>
+        <span data-section-tab="coverage" class="rounded-xl px-2 py-2">Coverage</span>
+        <span data-section-tab="driver" class="rounded-xl px-2 py-2">Driver</span>
+        <span data-section-tab="contact" class="rounded-xl px-2 py-2">Contact</span>
+      </nav>
+
+      <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-2.5 sm:px-8">
+          <button id="back-button" type="button" class="invisible inline-flex min-h-10 items-center gap-1 rounded-xl px-2 font-extrabold text-teddyBlue hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
+          <p class="text-sm font-bold text-slate-500"><span id="step-counter">1</span> of <span id="step-total">1</span></p>
+        </div>
+
+        <form id="quote-form" class="flex min-h-[430px] flex-col justify-center px-5 py-5 sm:min-h-[470px] sm:px-10 sm:py-7" novalidate>
+          <input type="hidden" name="lead_source" value="teddydrive_auto_quote">
+          <input type="hidden" name="landing_page" value="auto-quote">
+          <input type="hidden" name="consent_timestamp" id="consent_timestamp">
+          <input type="hidden" name="consent_text" id="consent_text">
+          <input type="hidden" name="xxTrustedFormCertUrl" id="xxTrustedFormCertUrl">
+          <input type="hidden" name="Jornaya_LeadID" id="Jornaya_LeadID">
+          <input type="text" name="company_website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div id="question-stage" aria-live="polite"></div>
+        </form>
+
+        <div id="success-panel" class="hidden min-h-[430px] place-items-center px-6 py-10 text-center sm:min-h-[470px]">
+          <div>
+            <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-4xl font-black text-emerald-700">✓</div>
+            <h1 class="mt-6 text-3xl font-black text-teddyNavy sm:text-4xl">Your request is on its way</h1>
+            <p class="mx-auto mt-3 max-w-lg text-lg leading-7 text-slate-600">A participating licensed insurance agent or provider may contact you about available coverage options.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="mx-auto mt-3 flex w-full max-w-3xl items-center justify-center gap-5 text-center text-xs font-semibold text-slate-500 sm:text-sm">
+        <span>✓ No obligation</span><span>✓ Takes about 3 minutes</span><span class="hidden sm:inline">✓ Your information is protected</span>
+      </div>
+    </main>
+
+    <footer class="px-4 py-3 text-center text-[11px] leading-5 text-slate-500">
+      TeddyDrive.com is an independent marketing website operated by Idillo Inc. and is not an insurance carrier.<br class="sm:hidden">
+      <a href="/privacy.html" class="underline hover:text-teddyBlue">Privacy</a> · <a href="/terms.html" class="underline hover:text-teddyBlue">Terms</a> · <a href="/privacy.html#do-not-sell" class="underline hover:text-teddyBlue">Do Not Sell My Info</a>
+    </footer>
+  </div>
+
+  <script>
+  (() => {
+    const ENDPOINT = 'https://forms.teddydrive.com/submit.php';
+    const form = document.getElementById('quote-form');
+    const stage = document.getElementById('question-stage');
+    const backButton = document.getElementById('back-button');
+    const progressBar = document.getElementById('progress-bar');
+    const stepCounter = document.getElementById('step-counter');
+    const tabs = [...document.querySelectorAll('[data-section-tab]')];
+    const answers = {};
+    const history = [];
+    let index = 0;
+
+    const iconUrl = (slug, color = '082e5f') => `https://cdn.simpleicons.org/${slug}/${color}`;
+    const makes = [
+      ['Toyota','toyota'],['Ford','ford'],['Chevrolet','chevrolet'],['Honda','honda'],
+      ['Nissan','nissan'],['Hyundai','hyundai'],['Kia','kia'],['Jeep','jeep'],
+      ['Ram','ram'],['GMC','gmc'],['Subaru','subaru'],['Tesla','tesla'],['Other','']
+    ];
+    const carriers = [
+      ['State Farm','statefarm'],['GEICO','geico'],['Progressive','progressive'],
+      ['Allstate','allstate'],['USAA','usaa'],['Liberty Mutual','libertymutual'],
+      ['Nationwide','nationwide'],['Farmers','farmersinsurance'],['Other','']
+    ];
+    const years = Array.from({length: 31}, (_, i) => String(new Date().getFullYear() + 1 - i));
+
+    const steps = [
+      { section:'vehicle', key:'zip', type:'text', title:'Where do you park your vehicle?', sub:'Your ZIP code helps us find options available in your area.', placeholder:'5-digit ZIP code', inputmode:'numeric', autocomplete:'postal-code', validate:v => /^\d{5}$/.test(v), error:'Enter a valid 5-digit ZIP code.' },
+      { section:'vehicle', key:'has_coverage', type:'choice', title:'Are you currently insured?', choices:['Yes','No'] },
+      { section:'vehicle', key:'year', type:'choice', title:"What's the year of your vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true },
+      { section:'vehicle', key:'make', type:'logo', title:"What's the make of your vehicle?", choices:makes },
+      { section:'vehicle', key:'model', type:'text', title:`What's the model of your vehicle?`, placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off' },
+      { section:'vehicle', key:'owned_or_leased', type:'choice', title:'How is this vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3' },
+      { section:'vehicle', key:'use', type:'choice', title:'What is the primary use?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2' },
+      { section:'vehicle', key:'distance', type:'choice', title:'How far is your one-way commute?', choices:['Under 5 miles','5–9 miles','10–19 miles','20–39 miles','40+ miles'], grid:'grid-cols-1 sm:grid-cols-2', when:a => a.use === 'Commute to work' },
+      { section:'vehicle', key:'annual_distance', type:'choice', title:'About how many miles do you drive each year?', choices:['Under 5,000','5,000–9,999','10,000–14,999','15,000–19,999','20,000+'], grid:'grid-cols-1 sm:grid-cols-2' },
+      { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add another vehicle?', sub:'Multi-vehicle households may qualify for additional options.', choices:['Yes','No'] },
+      { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true, when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'model_2', type:'text', title:"What's the model of your second vehicle?", placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off', when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
+      { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
+      { section:'coverage', key:'months_insured', type:'choice', title:'How long have you been continuously insured?', choices:['Less than 6 months','6–11 months','1–2 years','3–5 years','More than 5 years'], grid:'grid-cols-1 sm:grid-cols-2', when:a => a.has_coverage === 'Yes' },
+      { section:'coverage', key:'expiration_date', type:'date', title:'When does your current policy expire?', when:a => a.has_coverage === 'Yes' },
+      { section:'coverage', key:'preferred_coverage', type:'choice', title:'What level of coverage would you like?', choices:['State minimum','Standard','Preferred','Premium','Not sure'], grid:'grid-cols-1 sm:grid-cols-2' },
+      { section:'coverage', key:'deductible', type:'choice', title:'Preferred collision deductible?', choices:['$250','$500','$1,000','$2,000','Not sure'], grid:'grid-cols-2 sm:grid-cols-3' },
+      { section:'driver', key:'gender', type:'choice', title:'What is your gender?', choices:['Male','Female'], note:'Insurance options may use this information where permitted by law.' },
+      { section:'driver', key:'marital_status', type:'choice', title:'What is your marital status?', choices:['Single','Married','Divorced','Separated','Widowed','Domestic partner'], grid:'grid-cols-2 sm:grid-cols-3' },
+      { section:'driver', key:'highest_level', type:'choice', title:'What is your highest education level?', choices:['High school','Some college','Associate degree',"Bachelor's degree",'Graduate degree','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
+      { section:'driver', key:'occupation', type:'choice', title:'What best describes your occupation?', choices:['Employed','Self-employed','Retired','Student','Homemaker','Unemployed','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
+      { section:'driver', key:'credit_rating', type:'choice', title:'How would you estimate your credit?', sub:"Most people select “Good.” This does not affect your credit score.", choices:['Excellent','Good','Average','Poor or fair'], grid:'grid-cols-2' },
+      { section:'driver', key:'ticket_count', type:'choice', title:'Tickets in the past three years?', choices:['0','1','2','3+'], grid:'grid-cols-2 sm:grid-cols-4' },
+      { section:'driver', key:'license_status', type:'choice', title:'Do you have an active driver’s license?', choices:['Yes','No'] },
+      { section:'driver', key:'driver_state', type:'select', title:'Which state issued your license?', options:'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ') },
+      { section:'driver', key:'at_fault_accident', type:'choice', title:'Any at-fault accidents in the past three years?', choices:['Yes','No'] },
+      { section:'driver', key:'dui', type:'choice', title:'Any DUI convictions in the past three years?', choices:['Yes','No'] },
+      { section:'driver', key:'sr22', type:'choice', title:'Do you currently need an SR-22?', choices:['Yes','No','Not sure'], grid:'grid-cols-1 sm:grid-cols-3' },
+      { section:'driver', key:'birthdate', type:'date', title:"What's your date of birth?", validate:v => { const d=new Date(v), now=new Date(); let age=now.getFullYear()-d.getFullYear(); if(now < new Date(now.getFullYear(),d.getMonth(),d.getDate())) age--; return age >= 18 && age <= 100; }, error:'Enter a valid birthdate for a driver age 18 or older.' },
+      { section:'driver', key:'own_or_rent', type:'choice', title:'Do you own or rent your home?', choices:['Own','Rent','Other'] },
+      { section:'driver', key:'bundle_interest', type:'choice', title:'Interested in bundling home and auto?', sub:'Bundling may provide additional savings.', choices:['Yes','No'] },
+      { section:'driver', key:'military', type:'choice', title:'Have you or your spouse served in the U.S. military?', choices:['Yes','No'] },
+      { section:'contact', key:'name', type:'name', title:"What's your name?", sub:'Your information is secure and used to match available options.' },
+      { section:'contact', key:'address', type:'address', title:"What's your current address?" },
+      { section:'contact', key:'email', type:'email', title:"What's your email address?", placeholder:'you@example.com', autocomplete:'email' },
+      { section:'contact', key:'phone', type:'phone', title:'Where can a licensed agent reach you?', placeholder:'(555) 555-5555', autocomplete:'tel' },
+      { section:'contact', key:'review', type:'review', title:'Review your information' }
+    ];
+
+    document.getElementById('step-total').textContent = steps.length;
+
+    function activeSteps() { return steps.filter(s => !s.when || s.when(answers)); }
+    function esc(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function heading(step) {
+      return `<div class="text-center"><p class="text-xs font-black uppercase tracking-[.18em] text-teddyBlue">${esc(step.section)}</p><h1 class="mx-auto mt-2 max-w-2xl text-2xl font-black leading-tight text-teddyNavy sm:text-4xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-2 max-w-xl text-sm font-semibold leading-6 text-slate-500 sm:text-base">${esc(step.sub)}</p>` : ''}</div>`;
+    }
+    function choiceMarkup(step) {
+      const grid = step.grid || 'grid-cols-2';
+      return `<div class="mt-6 grid ${grid} gap-3">${step.choices.map(choice => `<button type="button" class="quote-choice ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${esc(choice)}</button>`).join('')}</div>`;
+    }
+    function logoMarkup(step) {
+      return `<div class="mt-5 grid max-h-[310px] grid-cols-2 gap-2 overflow-y-auto p-1 sm:grid-cols-3">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-18 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-8 w-10 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-sm">⋯</span>`}<span>${esc(label)}</span></button>`).join('')}</div>`;
+    }
+    function fieldMarkup(step, type='text') {
+      const value = answers[step.key] || '';
+      return `<div class="mx-auto mt-6 max-w-xl"><input id="active-input" class="quote-field text-center" type="${type}" name="${esc(step.key)}" value="${esc(value)}" placeholder="${esc(step.placeholder||'')}" inputmode="${esc(step.inputmode||'')}" autocomplete="${esc(step.autocomplete||'off')}"><p id="field-error" class="mt-2 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary mt-2">Continue →</button></div>`;
+    }
+    function nameMarkup() {
+      return `<div class="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2"><input id="first-name" class="quote-field" autocomplete="given-name" placeholder="First name" value="${esc(answers.first_name||'')}"><input id="last-name" class="quote-field" autocomplete="family-name" placeholder="Last name" value="${esc(answers.last_name||'')}"><p id="field-error" class="min-h-5 text-sm font-bold text-red-600 sm:col-span-2"></p><button type="button" id="continue-button" class="quote-primary sm:col-span-2">Continue →</button></div>`;
+    }
+    function addressMarkup() {
+      return `<div class="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-3"><input id="street" class="quote-field col-span-2" autocomplete="street-address" placeholder="Street address" value="${esc(answers.address||'')}"><input id="city" class="quote-field" autocomplete="address-level2" placeholder="City" value="${esc(answers.city||'')}"><select id="state" class="quote-field" autocomplete="address-level1"><option value="">State</option>${'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ').map(s=>`<option ${answers.state===s?'selected':''}>${s}</option>`).join('')}</select><p id="field-error" class="col-span-2 min-h-5 text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary col-span-2">Continue →</button></div>`;
+    }
+    function reviewMarkup() {
+      const vehicle = [answers.year, answers.make, answers.model].filter(Boolean).join(' ');
+      const rows = [
+        ['Vehicle',vehicle],['Insurance',answers.has_coverage==='Yes' ? answers.former_insurer : 'Not currently insured'],
+        ['Coverage',answers.preferred_coverage],['Driver',`${answers.first_name||''} ${answers.last_name||''}`.trim()],
+        ['Address',[answers.address,answers.city,answers.state,answers.zip].filter(Boolean).join(', ')],
+        ['Email',answers.email],['Phone',answers.phone]
+      ];
+      const consent = `By clicking “Review My Options,” I provide my electronic signature and agree that Idillo Inc., TeddyDrive, participating licensed insurance agents or providers, and the marketing partners identified in the linked disclosure may contact me at the phone number and email I provided about insurance products, including by calls or texts using automated technology or prerecorded messages, even if my number is on a Do Not Call list. Consent is not a condition of purchase. Message and data rates may apply.`;
+      return `<div class="mx-auto mt-4 max-w-2xl"><div class="grid gap-x-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">${rows.map(([k,v])=>`<div class="border-b border-slate-200 py-2"><p class="text-xs font-black uppercase tracking-wide text-slate-400">${esc(k)}</p><p class="mt-0.5 font-extrabold text-slate-800">${esc(v||'Not provided')}</p></div>`).join('')}</div><label class="mt-3 flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-slate-200 p-3"><input id="consent" type="checkbox" class="mt-1 h-5 w-5 shrink-0 accent-[#1777d4]"><span id="consent-copy" class="text-[10px] leading-4 text-slate-600">${consent} <a href="/terms.html" target="_blank" class="font-bold text-teddyBlue underline">Terms</a> and <a href="/privacy.html" target="_blank" class="font-bold text-teddyBlue underline">Privacy Policy</a>.</span></label><p id="field-error" class="mt-1 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="submit" id="submit-button" class="quote-primary">Review My Options →</button></div>`;
+    }
+
+    function render() {
+      const visible = activeSteps();
+      if (index >= visible.length) index = visible.length - 1;
+      const step = visible[index];
+      const pct = Math.max(3, Math.round(((index + 1) / visible.length) * 100));
+      progressBar.style.width = pct + '%';
+      progressBar.parentElement.setAttribute('aria-valuenow', pct);
+      stepCounter.textContent = index + 1;
+      document.getElementById('step-total').textContent = visible.length;
+      backButton.classList.toggle('invisible', index === 0);
+      tabs.forEach(tab => {
+        const active = tab.dataset.sectionTab === step.section;
+        tab.classList.toggle('bg-teddyNavy', active); tab.classList.toggle('text-white', active);
+      });
+
+      let body = '';
+      if (step.type === 'choice') body = choiceMarkup(step);
+      else if (step.type === 'logo') body = logoMarkup(step);
+      else if (step.type === 'name') body = nameMarkup();
+      else if (step.type === 'address') body = addressMarkup();
+      else if (step.type === 'review') body = reviewMarkup();
+      else if (step.type === 'select') body = `<div class="mx-auto mt-6 max-w-xl"><select id="active-input" class="quote-field text-center"><option value="">Select state</option>${step.options.map(value=>`<option ${answers[step.key]===value?'selected':''}>${value}</option>`).join('')}</select><p id="field-error" class="mt-2 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary mt-2">Continue →</button></div>`;
+      else body = fieldMarkup(step, step.type === 'phone' ? 'tel' : step.type);
+      stage.innerHTML = heading(step) + body + (step.note ? `<p class="mt-3 text-center text-xs text-slate-400">${esc(step.note)}</p>` : '');
+      bind(step);
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function advance() { history.push(index); index++; render(); }
+    function bind(step) {
+      stage.querySelectorAll('[data-value]').forEach(button => button.addEventListener('click', () => {
+        answers[step.key] = button.dataset.value;
+        button.classList.add('selected');
+        setTimeout(advance, 120);
+      }));
+      const continueButton = document.getElementById('continue-button');
+      if (!continueButton) return;
+      const submitCurrent = () => {
+        let value = '';
+        if (step.type === 'name') {
+          answers.first_name = document.getElementById('first-name').value.trim();
+          answers.last_name = document.getElementById('last-name').value.trim();
+          if (!answers.first_name || !answers.last_name) return showError('Enter your first and last name.');
+        } else if (step.type === 'address') {
+          answers.address = document.getElementById('street').value.trim();
+          answers.city = document.getElementById('city').value.trim();
+          answers.state = document.getElementById('state').value;
+          if (!answers.address || !answers.city || !answers.state) return showError('Enter your complete address.');
+        } else {
+          const input = document.getElementById('active-input'); value = input.value.trim();
+          if (step.type === 'phone') {
+            const digits=value.replace(/\D/g,''); if(digits.length!==10) return showError('Enter a valid 10-digit phone number.');
+            value=digits;
+          } else if (step.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return showError('Enter a valid email address.');
+          else if (!value || (step.validate && !step.validate(value))) return showError(step.error || 'Complete this field to continue.');
+          answers[step.key] = value;
+        }
+        advance();
+      };
+      continueButton.addEventListener('click', submitCurrent);
+      stage.querySelectorAll('input').forEach(input => input.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();submitCurrent();} }));
+    }
+    function showError(message) { const el=document.getElementById('field-error'); if(el) el.textContent=message; }
+
+    backButton.addEventListener('click', () => { if(index>0){ index--; render(); } });
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const consent = document.getElementById('consent');
+      if (!consent || !consent.checked) return showError('Please provide consent before continuing.');
+      const button = document.getElementById('submit-button');
+      button.disabled = true; button.textContent = 'Submitting…';
+      document.getElementById('consent_timestamp').value = new Date().toISOString();
+      document.getElementById('consent_text').value = document.getElementById('consent-copy').innerText;
+      const data = new FormData(form);
+      Object.entries(answers).forEach(([key,value]) => data.set(key,value));
+      try {
+        const response = await fetch(ENDPOINT,{method:'POST',body:data,mode:'cors'});
+        const result = await response.json();
+        if(!response.ok || !result.success) throw new Error(result.message || 'Submission failed');
+        form.classList.add('hidden');
+        document.getElementById('success-panel').classList.remove('hidden');
+        document.getElementById('success-panel').classList.add('grid');
+        progressBar.style.width='100%';
+      } catch (error) {
+        showError('We could not submit your request. Please try again.');
+        button.disabled=false; button.textContent='Review My Options →';
+      }
+    });
+
+    const params = new URLSearchParams(location.search);
+    const allowedPrefill = ['zip','year','make','model','has_coverage','former_insurer'];
+    allowedPrefill.forEach(key => { if(params.get(key)) answers[key]=params.get(key).slice(0,100); });
+    render();
+  })();
+  </script>
+
+  <!-- TRUSTEDFORM/JORNAYA: add the account-approved certification scripts before paid traffic. -->
+</body>
+</html>
