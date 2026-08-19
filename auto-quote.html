@@ -7,32 +7,44 @@
   <meta name="description" content="Answer a few questions to review auto insurance options from participating licensed insurance providers.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/output.css">
 </head>
-<body class="min-h-screen overflow-x-hidden bg-[#f4f9fd] text-slate-900 antialiased">
+<body class="min-h-screen overflow-x-hidden bg-[#f4f8fb] text-slate-900 antialiased" style="font-family:'Manrope',sans-serif">
   <div class="flex min-h-[100svh] flex-col">
     <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex h-20 max-w-6xl items-center justify-center px-4 sm:h-24 sm:justify-start">
-        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-14 w-auto sm:h-16"></a>
+      <div class="mx-auto grid h-14 max-w-7xl grid-cols-[1fr_auto] items-center px-4 sm:grid-cols-3 sm:px-6">
+        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-10 w-auto"></a>
+        <div id="route-current-label" class="hidden text-center text-xs font-extrabold uppercase tracking-[.18em] text-teddyNavy sm:block">Vehicle 01</div>
+        <div class="text-right text-xs font-bold text-slate-500">About 2 minutes</div>
       </div>
+      <div class="h-1 bg-teddyOrange"></div>
     </header>
 
-    <main class="flex min-h-0 w-full flex-1 flex-col px-4 py-4 sm:px-6 sm:py-6">
-      <div class="mx-auto mb-4 w-full max-w-5xl sm:mb-5">
-        <div class="mb-2 flex items-center justify-between text-xs font-extrabold text-slate-500 sm:text-sm"><span>Quote progress</span><span id="progress-number">3%</span></div>
-        <div class="h-2 overflow-hidden rounded-full bg-blue-100" role="progressbar" aria-label="Quote progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
-          <div id="progress-bar" class="h-full rounded-full bg-teddyOrange transition-all duration-500" style="width:3%"></div>
+    <nav class="border-b border-slate-200 bg-white" aria-label="Quote progress">
+      <div class="relative mx-auto grid h-14 max-w-5xl grid-cols-4 items-center px-4 sm:h-16">
+        <div class="absolute left-[12.5%] right-[12.5%] top-[21px] h-0.5 bg-slate-200 sm:top-[25px]" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-bar" class="h-full bg-teddyBlue transition-all duration-500" style="width:0%"></div>
         </div>
+        <div data-route-step="vehicle" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-teddyOrange ring-4 ring-orange-100"></span><span class="route-label mt-2 block text-[9px] font-extrabold uppercase tracking-wider text-teddyNavy sm:text-xs">Vehicle</span></div>
+        <div data-route-step="coverage" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-slate-300 ring-4 ring-white"></span><span class="route-label mt-2 block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 sm:text-xs">Coverage</span></div>
+        <div data-route-step="driver" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-slate-300 ring-4 ring-white"></span><span class="route-label mt-2 block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 sm:text-xs">Driver</span></div>
+        <div data-route-step="contact" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-slate-300 ring-4 ring-white"></span><span class="route-label mt-2 block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 sm:text-xs">Contact</span></div>
       </div>
+    </nav>
 
-      <section class="relative mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-soft">
-        <div class="h-2 w-full bg-gradient-to-r from-teddyBlue via-blue-400 to-teddyOrange"></div>
-        <div class="absolute left-5 top-4 z-20 sm:left-8 sm:top-6">
-          <button id="back-button" type="button" class="invisible inline-flex min-h-10 items-center gap-1 rounded-xl px-2 font-bold text-teddyBlue hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
+    <main class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden px-4 sm:px-6">
+      <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 -right-24 h-64 w-[42rem] rotate-[-12deg] bg-teddyNavy opacity-[.035]"></div>
+      <div aria-hidden="true" class="pointer-events-none absolute -bottom-12 right-10 h-2 w-56 rotate-[-12deg] bg-teddyOrange opacity-40"></div>
+      <section class="relative mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col">
+        <div class="absolute left-0 top-2 z-20 sm:top-3">
+          <button id="back-button" type="button" class="invisible inline-flex min-h-9 items-center gap-1 px-1 text-sm font-extrabold uppercase tracking-wide text-teddyBlue hover:text-teddyNavy focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
           <span class="hidden"><span id="step-counter">1</span><span id="step-total">1</span></span>
         </div>
 
-        <form id="quote-form" class="flex min-h-[420px] flex-1 flex-col justify-center px-5 py-14 sm:min-h-[500px] sm:px-16 sm:py-16" novalidate>
+        <form id="quote-form" class="flex min-h-0 flex-1 flex-col justify-center py-12 sm:py-14" novalidate>
           <input type="hidden" name="lead_source" value="teddydrive_auto_quote">
           <input type="hidden" name="landing_page" value="auto-quote">
           <input type="hidden" name="consent_timestamp" id="consent_timestamp">
@@ -43,7 +55,7 @@
           <div id="question-stage" aria-live="polite"></div>
         </form>
 
-        <div id="success-panel" class="hidden min-h-[440px] flex-1 place-items-center px-6 py-10 text-center sm:min-h-[500px]">
+        <div id="success-panel" class="hidden flex-1 place-items-center px-6 py-10 text-center">
           <div>
             <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-4xl font-black text-emerald-700">✓</div>
             <h1 class="mt-6 text-3xl font-black text-teddyNavy sm:text-4xl">Your request is on its way</h1>
@@ -54,7 +66,7 @@
 
     </main>
 
-    <footer class="border-t border-slate-200 bg-white px-3 py-2 text-center text-[10px] leading-4 text-slate-500 sm:text-xs">
+    <footer class="border-t border-slate-200 bg-white px-3 py-1.5 text-center text-[9px] leading-4 text-slate-500 sm:text-[10px]">
       © 2026 Idillo Inc. · <a href="/terms.html" class="hover:text-teddyBlue">Terms &amp; Disclosures</a> · <a href="/privacy.html" class="hover:text-teddyBlue">Privacy Policy</a> · <a href="/privacy.html#do-not-sell" class="hover:text-teddyBlue">Do Not Sell My Info</a>
     </footer>
   </div>
@@ -66,14 +78,14 @@
     const stage = document.getElementById('question-stage');
     const backButton = document.getElementById('back-button');
     const progressBar = document.getElementById('progress-bar');
-    const progressNumber = document.getElementById('progress-number');
+    const routeCurrentLabel = document.getElementById('route-current-label');
+    const routeSteps = [...document.querySelectorAll('[data-route-step]')];
     const stepCounter = document.getElementById('step-counter');
-    const tabs = [...document.querySelectorAll('[data-section-tab]')];
     const answers = {};
     const history = [];
     let index = 0;
 
-    const iconUrl = (slug, color = '082e5f') => `https://cdn.simpleicons.org/${slug}/${color}`;
+    const iconUrl = slug => `https://cdn.simpleicons.org/${slug}`;
     const makes = [
       ['Toyota','toyota'],['Ford','ford'],['Chevrolet','chevrolet'],['Honda','honda'],
       ['Nissan','nissan'],['Hyundai','hyundai'],['Kia','kia'],['Jeep','jeep'],
@@ -85,18 +97,33 @@
       ['Nationwide','nationwide'],['Farmers','farmersinsurance'],['Other','']
     ];
     const years = Array.from({length: 31}, (_, i) => String(new Date().getFullYear() + 1 - i));
+    const models = {
+      Toyota:['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius','Sienna','4Runner','Other'],
+      Ford:['F-150','Escape','Explorer','Edge','Fusion','Mustang','Bronco','Ranger','Expedition','Other'],
+      Chevrolet:['Silverado','Equinox','Malibu','Traverse','Tahoe','Suburban','Trailblazer','Colorado','Impala','Other'],
+      Honda:['Civic','Accord','CR-V','Pilot','Odyssey','HR-V','Ridgeline','Passport','Other'],
+      Nissan:['Altima','Rogue','Sentra','Pathfinder','Murano','Frontier','Titan','Versa','Maxima','Other'],
+      Hyundai:['Tucson','Elantra','Santa Fe','Sonata','Palisade','Kona','Venue','Accent','Other'],
+      Kia:['Forte','K5 / Optima','Sportage','Sorento','Soul','Telluride','Rio','Carnival','Other'],
+      Jeep:['Wrangler','Grand Cherokee','Cherokee','Compass','Renegade','Gladiator','Wagoneer','Other'],
+      Ram:['1500','2500','3500','ProMaster','Other'],
+      GMC:['Sierra','Terrain','Acadia','Yukon','Canyon','Savana','Other'],
+      Subaru:['Outback','Forester','Crosstrek','Impreza','Legacy','Ascent','WRX','Other'],
+      Tesla:['Model 3','Model Y','Model S','Model X','Cybertruck','Other'],
+      Other:['Other']
+    };
 
     const steps = [
       { section:'vehicle', key:'has_coverage', type:'choice', title:'Are you currently insured?', choices:['Yes','No'] },
-      { section:'vehicle', key:'year', type:'choice', title:"What's the year of your vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true },
+      { section:'vehicle', key:'year', type:'choice', title:"What's the year of your vehicle?", choices:years, grid:'grid-cols-6', scroll:true },
       { section:'vehicle', key:'make', type:'logo', title:"What's the make of your vehicle?", choices:makes },
-      { section:'vehicle', key:'model', type:'text', title:`What's the model of your vehicle?`, placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off' },
+      { section:'vehicle', key:'model', type:'model', title:`What's the model of your vehicle?` },
       { section:'vehicle', key:'owned_or_leased', type:'choice', title:'How is this vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3' },
       { section:'vehicle', key:'use', type:'choice', title:'What is the primary use?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2' },
       { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add a second vehicle?', sub:'Save an additional 20%', choices:['Yes','No'] },
-      { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-3 sm:grid-cols-5', scroll:true, when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-6', scroll:true, when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'model_2', type:'text', title:"What's the model of your second vehicle?", placeholder:'e.g. Camry, F-150, CR-V', autocomplete:'off', when:a => a.second_vehicle === 'Yes' },
+      { section:'vehicle', key:'model_2', type:'model', title:"What's the model of your second vehicle?", when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
       { section:'vehicle', key:'use_2', type:'choice', title:'What is the primary use for your second vehicle?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2', when:a => a.second_vehicle === 'Yes' },
       { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
@@ -126,15 +153,22 @@
     function activeSteps() { return steps.filter(s => !s.when || s.when(answers)); }
     function esc(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
     function heading(step) {
-      return `<div class="text-center"><h1 class="mx-auto max-w-3xl text-3xl font-black leading-tight text-teddyNavy sm:text-5xl">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-3 max-w-xl text-sm font-medium leading-6 text-slate-500 sm:text-lg">${esc(step.sub)}</p>` : ''}</div>`;
+      return `<div class="text-left"><p class="mb-2 text-[10px] font-extrabold uppercase tracking-[.2em] text-teddyOrange">Select one</p><h1 class="max-w-4xl text-3xl uppercase leading-[.98] tracking-[-.025em] text-teddyNavy sm:text-5xl" style="font-family:'Archivo Black',sans-serif">${esc(step.title)}</h1>${step.sub ? `<p class="mt-3 max-w-xl text-sm font-bold leading-6 text-teddyBlue sm:text-base">${esc(step.sub)}</p>` : ''}</div>`;
     }
     function choiceMarkup(step) {
       const grid = step.grid || 'grid-cols-2';
       const binary = step.choices.length === 2 && step.choices[0] === 'Yes' && step.choices[1] === 'No';
-      return `<div class="mx-auto mt-7 grid w-full ${grid} gap-4 sm:mt-10 sm:max-w-4xl sm:gap-6">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${binary?`<span class="quote-answer-icon ${choice==='Yes'?'bg-blue-100 text-teddyBlue':'bg-orange-100 text-teddyOrange'}">${choice==='Yes'?'✓':'×'}</span>`:''}<span>${esc(choice)}</span></button>`).join('')}</div>`;
+      const isYear = step.key === 'year' || step.key === 'year_2';
+      if (isYear) return `<div class="mt-5 sm:hidden"><select id="year-select" class="quote-field"><option value="">Select vehicle year</option>${step.choices.map(choice=>`<option ${answers[step.key]===choice?'selected':''}>${choice}</option>`).join('')}</select></div><div class="mt-5 hidden grid-cols-6 gap-2 sm:grid">${step.choices.map(choice => `<button type="button" class="quote-choice min-h-12 py-2 ${answers[step.key]===choice?'selected':''}" data-value="${choice}">${choice}</button>`).join('')}</div>`;
+      return `<div class="mt-6 grid w-full ${grid} gap-3 sm:mt-8 sm:max-w-4xl">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}"><span>${esc(choice)}</span></button>`).join('')}</div>`;
     }
     function logoMarkup(step) {
-      return `<div class="mt-5 grid max-h-[310px] grid-cols-2 gap-2 overflow-y-auto p-1 sm:grid-cols-3">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-18 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-8 w-10 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-sm">⋯</span>`}<span>${esc(label)}</span></button>`).join('')}</div>`;
+      return `<div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-20 flex-col gap-2 bg-white py-3 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-9 w-24 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="text-2xl text-teddyOrange">•••</span>`}<span class="text-sm">${esc(label)}</span></button>`).join('')}</div>`;
+    }
+    function modelMarkup(step) {
+      const make = answers[step.key === 'model_2' ? 'make_2' : 'make'] || 'Other';
+      const choices = models[make] || models.Other;
+      return `<div class="mt-6 grid gap-2 sm:max-w-4xl sm:grid-cols-2">${choices.map(model => `<button type="button" class="quote-choice justify-between bg-white px-5 text-left ${answers[step.key]===model?'selected':''}" data-value="${esc(model)}"><span>${esc(model)}</span><span class="text-xl text-teddyBlue">›</span></button>`).join('')}</div>`;
     }
     function fieldMarkup(step, type='text') {
       const value = answers[step.key] || '';
@@ -162,22 +196,25 @@
       const visible = activeSteps();
       if (index >= visible.length) index = visible.length - 1;
       const step = visible[index];
-      const pct = Math.max(3, Math.round(((index + 1) / visible.length) * 100));
-      progressBar.style.width = pct + '%';
-      progressNumber.textContent = pct + '%';
-      progressBar.parentElement.setAttribute('aria-valuenow', pct);
+      const sectionOrder = ['vehicle','coverage','driver','contact'];
+      const sectionIndex = sectionOrder.indexOf(step.section);
+      const routePct = sectionIndex * (100 / (sectionOrder.length - 1));
+      progressBar.style.width = routePct + '%';
+      progressBar.parentElement.setAttribute('aria-valuenow', Math.round(routePct));
+      routeCurrentLabel.textContent = `${step.section} ${String(sectionIndex + 1).padStart(2,'0')}`;
+      routeSteps.forEach((routeStep, routeIndex) => {
+        const dot = routeStep.querySelector('.route-dot');
+        const label = routeStep.querySelector('.route-label');
+        dot.style.backgroundColor = routeIndex === sectionIndex ? '#ff7300' : routeIndex < sectionIndex ? '#1777d4' : '#cbd5e1';
+        label.style.color = routeIndex <= sectionIndex ? '#082e5f' : '#94a3b8';
+      });
       stepCounter.textContent = index + 1;
       document.getElementById('step-total').textContent = visible.length;
       backButton.classList.toggle('invisible', index === 0);
-      tabs.forEach(tab => {
-        const active = tab.dataset.sectionTab === step.section;
-        tab.classList.toggle('bg-[#071f46]', active); tab.classList.toggle('text-white', active);
-        tab.classList.toggle('border-teddyOrange', active); tab.classList.toggle('border-transparent', !active);
-      });
-
       let body = '';
       if (step.type === 'choice') body = choiceMarkup(step);
       else if (step.type === 'logo') body = logoMarkup(step);
+      else if (step.type === 'model') body = modelMarkup(step);
       else if (step.type === 'name') body = nameMarkup();
       else if (step.type === 'address') body = addressMarkup();
       else if (step.type === 'review') body = reviewMarkup();
@@ -195,6 +232,8 @@
         button.classList.add('selected');
         setTimeout(advance, 120);
       }));
+      const yearSelect = document.getElementById('year-select');
+      if (yearSelect) yearSelect.addEventListener('change', () => { if(yearSelect.value){ answers[step.key]=yearSelect.value; advance(); } });
       const continueButton = document.getElementById('continue-button');
       if (!continueButton) return;
       const submitCurrent = () => {
