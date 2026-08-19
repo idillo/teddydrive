@@ -17,8 +17,9 @@
   .choice-card span { @apply flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-center font-extrabold text-slate-700 transition peer-checked:border-teddyBlue peer-checked:bg-blue-50 peer-checked:text-teddyBlue peer-focus-visible:ring-4 peer-focus-visible:ring-blue-100; }
   .quote-choice { @apply relative flex min-h-14 cursor-pointer items-center justify-center gap-3 rounded-[10px] border border-blue-200 bg-blue-50 px-5 py-3 text-center text-base font-extrabold text-teddyNavy transition hover:border-teddyBlue hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100; }
   .quote-choice.selected { @apply border-teddyOrange bg-orange-50 text-teddyNavy ring-4 ring-orange-100; }
-  .quote-choice.binary { @apply min-h-24 justify-between border-2 bg-white px-6 text-left text-xl uppercase tracking-wide sm:min-h-32 sm:px-8 sm:text-2xl; }
-  .quote-choice.binary::after { content: '→'; @apply text-2xl text-teddyOrange; }
+  .quote-choice.binary { @apply min-h-28 flex-col gap-2 border-2 bg-white px-6 text-xl sm:min-h-44 sm:text-2xl; }
+  .binary-icon { @apply grid h-14 w-14 place-items-center rounded-full bg-blue-100 text-4xl font-semibold leading-none text-teddyBlue sm:h-16 sm:w-16; }
+  .quote-choice.binary:nth-child(2) .binary-icon { @apply bg-orange-100 text-teddyOrange; }
   .quote-field { @apply block w-full rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 text-lg font-bold text-slate-900 outline-none transition placeholder:font-medium placeholder:text-slate-400 focus:border-teddyBlue focus:ring-4 focus:ring-blue-100; }
   .quote-primary { @apply inline-flex min-h-16 w-full items-center justify-center rounded-2xl bg-teddyOrange px-8 py-4 text-xl font-black text-white shadow-cta transition hover:-translate-y-0.5 hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-200 disabled:cursor-not-allowed disabled:opacity-50; }
 }
