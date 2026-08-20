@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/output.css --minify",
+    "build:vehicles": "node ./scripts/build-vehicle-data.mjs",
     "watch:css": "tailwindcss -i ./src/input.css -o ./assets/output.css --watch"
   },
   "devDependencies": {

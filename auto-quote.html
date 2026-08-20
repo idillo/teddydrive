@@ -24,6 +24,7 @@
   </main>
   <footer>© 2026 Idillo Inc.<a href="/terms.html">Terms &amp; Disclosures</a><a href="/privacy.html">Privacy Policy</a><a href="/privacy.html#do-not-sell">Do Not Sell My Info</a></footer>
 
+  <script src="/assets/vehicle-data.js"></script>
   <script>
   (()=>{
     'use strict';
@@ -31,8 +32,11 @@
     const answers={incidents:[]};let current=0,enteringSubscreen=false;
     const esc=(s='')=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const logoBase='https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/';
-    const makes=['Toyota','Ford','Chevrolet','Honda','Nissan','Hyundai','Kia','Jeep','Ram','GMC','Subaru','Dodge','Chrysler','Buick','Mazda','Volkswagen','Tesla','BMW','Mercedes-Benz','Lexus','Audi','Acura','Cadillac','Volvo','Mitsubishi','Other'];
-    const models={Toyota:['RAV4','Corolla','Camry','Highlander','Tacoma','Prius','Tundra','Sienna','4Runner','Other'],Ford:['F-150','Escape','Explorer','Edge','Mustang','Bronco','Ranger','Expedition','Maverick','Other'],Chevrolet:['Silverado','Equinox','Traverse','Malibu','Trax','Blazer','Colorado','Tahoe','Suburban','Other'],Honda:['CR-V','Civic','Accord','Pilot','HR-V','Odyssey','Ridgeline','Passport','Other'],Nissan:['Rogue','Altima','Sentra','Pathfinder','Frontier','Murano','Kicks','Armada','Other'],Hyundai:['Tucson','Elantra','Santa Fe','Sonata','Palisade','Kona','Venue','Other'],Kia:['Sorento','Sportage','Forte','Telluride','Soul','Carnival','K5','Seltos','Other'],Jeep:['Wrangler','Grand Cherokee','Cherokee','Compass','Gladiator','Renegade','Wagoneer','Other'],Ram:['1500','2500','3500','ProMaster','Other'],GMC:['Sierra','Yukon','Acadia','Terrain','Canyon','Other'],Subaru:['Outback','Forester','Crosstrek','Impreza','Legacy','Ascent','WRX','Other'],Dodge:['Charger','Challenger','Durango','Journey','Grand Caravan','Other'],Tesla:['Model 3','Model Y','Model S','Model X','Cybertruck','Other']};
+    const vehicleData=window.TD_VEHICLES||{};
+    const collator=new Intl.Collator('en',{numeric:true,sensitivity:'base'});
+    const vehicleYearFor=x=>String(answers[x.k.endsWith('_2')?'year_2':'year']||'');
+    const makesFor=x=>[...Object.keys(vehicleData[vehicleYearFor(x)]||{}).sort(collator.compare),'Other'];
+    const modelsFor=x=>{const suffix=x.k.endsWith('_2')?'_2':'',year=String(answers[`year${suffix}`]||''),make=answers[`make${suffix}`];return [...(vehicleData[year]?.[make]||[]),'Other']};
     const years=[...Array.from({length:28},(_,i)=>String(2027-i)),'Older'];
     const providers=['AAA / Auto Club','Allstate','Farm Bureau','Farmers','GEICO','Liberty Mutual','Nationwide','Progressive','State Farm','Travelers','USAA','Other'];
     const states='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ');
@@ -69,8 +73,8 @@
     function renderBody(x){
       if(x.type==='yn')return binary(x,true);if(x.type==='binary')return binary(x,false);
       if(x.type==='years')return `<div class="grid g7 years">${years.map(v=>choice(v)).join('')}</div>`;
-      if(x.type==='makes')return `<div class="make-grid">${makes.map(n=>`<button type="button" class="make" data-value="${esc(n)}">${n==='Other'?'<b style="font-size:24px;color:var(--blue)">•••</b>':`<img src="${logoBase+n.toLowerCase().replace(/ /g,'-')}.png" alt="" loading="lazy" onerror="this.style.display='none'">`}<span>${esc(n)}</span></button>`).join('')}</div>`;
-      if(x.type==='models'){const make=answers[x.k==='model_2'?'make_2':'make'];const list=models[make];return list?`<div class="grid g3 compact-list">${list.map(v=>choice(v)).join('')}</div>`:form('<div class="field"><label for="exact-model">Exact model</label><input id="exact-model" placeholder="Example: XC60"></div>')}
+      if(x.type==='makes'){const list=makesFor(x);return `<div class="make-grid">${list.map(n=>`<button type="button" class="make" data-value="${esc(n)}">${n==='Other'?'<b style="font-size:24px;color:var(--blue)">•••</b>':`<img src="${logoBase+n.toLowerCase().replace(/ /g,'-')}.png" alt="" loading="lazy" onerror="this.style.display='none'">`}<span>${esc(n)}</span></button>`).join('')}</div>`}
+      if(x.type==='models'){const list=modelsFor(x);return list.length>1?`<div class="grid g3 compact-list">${list.map(v=>choice(v)).join('')}</div>`:form('<div class="field"><label for="exact-model">Exact model</label><input id="exact-model" placeholder="Example: XC60"></div>')}
       if(x.type==='providers')return `<div class="grid g4 compact-list">${x.o?x.o.map(v=>choice(v)).join(''):providers.map(v=>choice(v)).join('')}</div>`;
       if(x.type==='grid')return `<div class="grid g${x.cols||2} compact-list">${x.o.map(v=>choice(v)).join('')}</div>`;
       if(x.type==='zip')return form('<div class="field"><label class="sr-only" for="zip-only">ZIP code</label><input id="zip-only" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="Enter 5-digit ZIP code" value="'+esc(answers.zip||'')+'"></div>','Continue ›','zip-form');
