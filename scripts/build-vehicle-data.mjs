@@ -40,6 +40,7 @@ for (const row of rows) {
   const model = (row[baseModelIndex]?.trim() || row[modelIndex]?.trim());
   if (!/^\d{4}$/.test(year) || !make || !model) continue;
   if (make.toLowerCase() === 'ram') make = 'Dodge';
+  if (/^roush\b/i.test(make)) make = 'Ford';
   if (!vehicleSets.has(year)) vehicleSets.set(year, new Map());
   const makes = vehicleSets.get(year);
   if (!makes.has(make)) makes.set(make, new Set());
