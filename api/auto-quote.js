@@ -3,7 +3,6 @@ const { randomUUID } = require('node:crypto');
 const DEFAULT_API_BASE = 'https://api.jangl.com/v2/auto_insurance';
 
 const COVERAGE_TYPES = new Set(['State Minimum', 'Standard', 'Preferred', 'Premium']);
-const LICENSE_STATUSES = new Set(['Active', 'International', 'Learner', 'Probation', 'Restricted', 'Suspended', 'Temporary']);
 
 function clean(value, max = 200) {
   if (value === undefined || value === null) return '';
@@ -43,11 +42,9 @@ function buildVehicle(body, suffix = '') {
 }
 
 function buildDriver(body, includeIdentity) {
-  const licenseStatus = clean(body.license_status, 30);
   const driver = {
     birth_date: clean(body.birthdate, 10),
     relationship: 'Self',
-    license_status: LICENSE_STATUSES.has(licenseStatus) ? licenseStatus : undefined,
     license_state: clean(body.state, 2).toUpperCase(),
     residence_type: normalizeKey(body.own_or_rent) === 'own' ? 'Own' :
       normalizeKey(body.own_or_rent) === 'rent' ? 'Rent' : undefined
@@ -101,8 +98,7 @@ function buildData(body, includeIdentity) {
 
   if (normalizeKey(body.has_coverage) === 'yes' && clean(body.former_insurer)) {
     data.current_policy = compact({
-      insurance_company: clean(body.former_insurer, 120),
-      insured_since: clean(body.insured_since, 10)
+      insurance_company: clean(body.former_insurer, 120)
     });
   }
 
@@ -191,12 +187,12 @@ module.exports = async function handler(req, res) {
   try {
     const body = req.body && typeof req.body === 'object' ? req.body : {};
     requireFields(body, [
-      'zip','year','make','model','birthdate','coverage_type','license_status',
+      'zip','year','make','model','birthdate','coverage_type',
       'first_name','last_name','email','phone','address','city','state',
       'consent_text','consent_timestamp'
     ]);
     if (normalizeKey(body.has_coverage) === 'yes') {
-      requireFields(body, ['former_insurer', 'insured_since']);
+      requireFields(body, ['former_insurer']);
     }
     if (normalizeKey(body.second_vehicle) === 'yes') {
       requireFields(body, ['year_2', 'make_2', 'model_2']);
@@ -206,12 +202,6 @@ module.exports = async function handler(req, res) {
       error.statusCode = 400;
       throw error;
     }
-    if (!LICENSE_STATUSES.has(clean(body.license_status, 30))) {
-      const error = new Error('Invalid license status');
-      error.statusCode = 400;
-      throw error;
-    }
-
     let pingPayload = buildPing(body, req);
     let pingResult = await janglRequest('ping', pingPayload);
     if (pingResult.status !== 'success' || !pingResult.auth_code) {
@@ -246,7 +236,7 @@ module.exports = async function handler(req, res) {
     if (status >= 500) console.error('Auto quote integration error:', error.message);
     return res.status(status).json({
       success: false,
-      message: status >= 500 ? 'The quote service is temporarily unavailable.' : error.message
+      message: status >= 500 ? 'We could not submit your request. Please try again.' : error.message
     });
   }
 };

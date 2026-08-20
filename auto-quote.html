@@ -41,7 +41,6 @@
     const years=[...Array.from({length:28},(_,i)=>String(2027-i)),'Older'];
     const providers=['AAA / Auto Club','Allstate','Farm Bureau','Farmers','GEICO','Liberty Mutual','Nationwide','Progressive','State Farm','Travelers','USAA','Other'];
     const states='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ');
-    const licenseStatuses=['International','Learner','Probation','Restricted','Suspended','Temporary'];
     const steps=[
       {k:'has_coverage',t:'Are you currently insured?',type:'yn'},
       {k:'own_or_rent',t:'Do you own or rent your home?',type:'binary',o:['Own','Rent']},
@@ -54,16 +53,14 @@
       {k:'make_2',t:"What's the make of your second vehicle?",type:'makes',when:a=>a.second_vehicle==='Yes'},
       {k:'model_2',t:()=>`What's the model of your ${answers.make_2||'second vehicle'}?`,type:'models',when:a=>a.second_vehicle==='Yes'},
       {k:'former_insurer',t:'Who is your current insurance provider?',type:'providers',when:a=>a.has_coverage==='Yes'},
-      {k:'coverage_type',t:'What level of coverage are you looking for?',type:'grid',o:['State Minimum','Standard','Preferred','Premium'],cols:4},
-      {k:'active_license',t:'Is your driver’s license currently active?',type:'yn'},
-      {k:'license_status',t:'What is your current license status?',type:'grid',o:licenseStatuses,cols:3,when:a=>a.active_license==='No'},
+      {k:'coverage_type',t:'How much protection would you like?',sub:'Choose the option that feels closest. An agent can help you adjust it later.',type:'coverage'},
       {k:'has_incidents',t:'Any tickets, accidents, or major violations in the past 3 years?',type:'yn'},
       {k:'incidents',t:'Add your driving incident details',sub:'Each incident needs its actual date.',type:'incidents',when:a=>a.has_incidents==='Yes'},
       {k:'birthdate',t:"What's your date of birth?",type:'dob'},
       {k:'name',t:'What is your name?',type:'name'},
       {k:'address',t:'What is your address?',type:'address'},
       {k:'email',t:'Where should we send your insurance options?',type:'email'},
-      {k:'phone',t:"What's the best phone number to reach you?",sub:'A licensed insurance agent may call or email you about your insurance request.',type:'phone'}
+      {k:'phone',t:'Last step — where can a licensed insurance agent reach you?',sub:'Enter the best number to complete your insurance request.',type:'phone'}
     ];
     function visible(){return steps.filter(x=>!x.when||x.when(answers))}function title(x){return typeof x.t==='function'?x.t():x.t}
     function choice(v,cls='choice'){return `<button type="button" class="${cls}" data-value="${esc(v)}">${esc(v)}</button>`}
@@ -72,6 +69,7 @@
     function maskedDateInput(id,value=''){return `<div class="field"><label class="sr-only" for="${id}">Date</label><input id="${id}" inputmode="numeric" placeholder="MM/DD/YYYY" maxlength="10" value="${esc(value)}"></div>`}
     function renderBody(x){
       if(x.type==='yn')return binary(x,true);if(x.type==='binary')return binary(x,false);
+      if(x.type==='coverage'){const choices=[['State Minimum','Minimum required','Meets your state’s legal minimum'],['Standard','Everyday protection','A common balance of price and protection'],['Preferred','More protection','Higher limits for added protection'],['Premium','Highest protection','The strongest available coverage level']];return `<div class="coverage-options">${choices.map(([value,label,detail])=>`<button type="button" class="coverage-choice" data-value="${value}"><strong>${label}</strong><span>${detail}</span></button>`).join('')}</div>`}
       if(x.type==='years')return `<div class="grid g7 years">${years.map(v=>choice(v)).join('')}</div>`;
       if(x.type==='makes'){const list=makesFor(x);return `<div class="make-grid">${list.map(n=>`<button type="button" class="make" data-value="${esc(n)}">${n==='Other'?'<b style="font-size:24px;color:var(--blue)">•••</b>':`<img src="${logoBase+n.toLowerCase().replace(/ /g,'-')}.png" alt="" loading="lazy" onerror="this.style.display='none'">`}<span>${esc(n)}</span></button>`).join('')}</div>`}
       if(x.type==='models'){const list=modelsFor(x);return list.length>1?`<div class="grid g3 compact-list">${list.map(v=>choice(v)).join('')}</div>`:form('<div class="field"><label class="sr-only" for="exact-model">Exact vehicle model</label><input id="exact-model" placeholder="Type vehicle model"></div>')}
@@ -86,7 +84,7 @@
       if(x.type==='incidents')return incidentForm();return '';
     }
     function exactText(label,placeholder){return form(`<div class="field"><label class="sr-only" for="exact">${esc(label)}</label><input id="exact" placeholder="${esc(placeholder)}"></div>`)}
-    function stageFor(key){if(['has_coverage','own_or_rent','zip','year','make','model','second_vehicle','year_2','make_2','model_2'].includes(key))return 0;if(['former_insurer','coverage_type'].includes(key))return 1;if(['active_license','license_status','has_incidents','incidents','birthdate'].includes(key))return 2;return 3}
+    function stageFor(key){if(['has_coverage','own_or_rent','zip','year','make','model','second_vehicle','year_2','make_2','model_2'].includes(key))return 0;if(['former_insurer','coverage_type'].includes(key))return 1;if(['has_incidents','incidents','birthdate'].includes(key))return 2;return 3}
     function updateStages(active){progressStages.forEach((stage,index)=>{stage.classList.toggle('complete',index<active);stage.classList.toggle('current',index===active);stage.querySelector('.stage-marker').textContent=index<active?'✓':''})}
     function render(){enteringSubscreen=false;const v=visible();current=Math.max(0,Math.min(current,v.length-1));const x=v[current],started=current>0,pct=started?Math.round((current/v.length)*100):0;document.body.classList.toggle('initial',!started);intro.hidden=started;progressShell.hidden=!started;fill.style.width=pct+'%';fill.parentElement.setAttribute('aria-valuenow',pct);updateStages(stageFor(x.k));back.hidden=current===0;card.innerHTML=`<div class="question">${esc(title(x))}</div>${x.sub?`<div class="sub">${x.k==='second_vehicle'?`<span class="promo">${esc(x.sub)}</span>`:esc(x.sub)}</div>`:''}${renderBody(x)}`;bind(x);window.scrollTo(0,0)}
     function advance(){current++;render()}
@@ -94,7 +92,7 @@
     function select(x,value){
       if(x.type==='years'&&value==='Older')return exactSubscreen(x,'Exact vehicle year','Example: 1998',v=>/^\d{4}$/.test(v)&&+v<2000&&+v>=1900);
       if((x.type==='makes'||x.type==='models'||x.type==='providers')&&value==='Other')return exactSubscreen(x,x.type==='makes'?'Exact vehicle make':x.type==='models'?'Exact vehicle model':'Exact insurance provider',x.type==='makes'?'Type vehicle make':x.type==='models'?'Type vehicle model':'Type insurance provider',v=>v.length>=2);
-      answers[x.k]=value;if(x.k==='active_license')answers.license_status=value==='Yes'?'Active':'';advance()
+      answers[x.k]=value;advance()
     }
     function exactSubscreen(x,label,placeholder,valid){enteringSubscreen=true;card.innerHTML=`<div class="question">${esc(label)}</div>${exactText(label,placeholder)}`;const go=()=>{const v=document.getElementById('exact').value.trim();if(!valid(v))return fail('Please enter a valid value.');answers[x.k]=v;advance()};document.getElementById('continue').onclick=go;document.getElementById('exact').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go()}};document.getElementById('exact').focus()}
     function fail(message){const e=document.getElementById('error');if(e)e.textContent=message}
