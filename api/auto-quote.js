@@ -2,31 +2,8 @@ const { randomUUID } = require('node:crypto');
 
 const DEFAULT_API_BASE = 'https://api.jangl.com/v2/auto_insurance';
 
-const maritalStatuses = {
-  single: 'Single', married: 'Married', divorced: 'Divorced',
-  separated: 'Separated', widowed: 'Widowed', 'domestic partner': 'Domestic Partner'
-};
-
-const educationLevels = {
-  'high school': 'High School Diploma',
-  'high school diploma': 'High School Diploma',
-  'some/no high school': 'Some High School',
-  ged: 'GED',
-  'some college': 'Some College',
-  'associate degree': 'Associate Degree',
-  "bachelor's degree": 'Bachelors Degree',
-  'bachelors degree': 'Bachelors Degree',
-  'graduate degree': 'Masters Degree',
-  'masters degree': 'Masters Degree',
-  'doctoral degree': 'Doctoral Degree',
-  'trade/vocational': 'Vocational Degree'
-};
-
-const primaryUses = {
-  commute: 'Commute Work', 'commute to work': 'Commute Work',
-  pleasure: 'Pleasure', business: 'Business', farm: 'Farm',
-  school: 'Commute School'
-};
+const COVERAGE_TYPES = new Set(['State Minimum', 'Standard', 'Preferred', 'Premium']);
+const LICENSE_STATUSES = new Set(['Active', 'International', 'Learner', 'Probation', 'Restricted', 'Suspended', 'Temporary']);
 
 function clean(value, max = 200) {
   if (value === undefined || value === null) return '';
@@ -35,20 +12,6 @@ function clean(value, max = 200) {
 
 function normalizeKey(value) {
   return clean(value).toLowerCase();
-}
-
-function minimumInsuredSince(value) {
-  const years = { '1–2 years': 1, '3–4 years': 3, '5+ years': 5 }[clean(value)];
-  if (!years) return undefined;
-  const date = new Date();
-  date.setUTCFullYear(date.getUTCFullYear() - years);
-  return date.toISOString().slice(0, 10);
-}
-
-function dateMonthsAgo(months) {
-  const date = new Date();
-  date.setUTCMonth(date.getUTCMonth() - months);
-  return date.toISOString().slice(0, 10);
 }
 
 function firstHeader(value) {
@@ -76,59 +39,29 @@ function buildVehicle(body, suffix = '') {
   const model = clean(body[`model${suffix}`], 100);
   if (!year || !make || !model) return null;
 
-  const ownership = normalizeKey(body[`owned_or_leased${suffix}`] || body.owned_or_leased);
-  const use = normalizeKey(body[`use${suffix}`] || body.use);
-  const ownershipValues = { owned: 'Own', financed: 'Finance', leased: 'Lease' };
-  const vehicle = {
-    year,
-    make,
-    model,
-    ownership: ownershipValues[ownership],
-    primary_use: primaryUses[use] || undefined
-  };
-
-  return compact(vehicle);
+  return { year, make, model };
 }
 
 function buildDriver(body, includeIdentity) {
-  const gender = normalizeKey(body.gender);
+  const licenseStatus = clean(body.license_status, 30);
   const driver = {
     birth_date: clean(body.birthdate, 10),
     relationship: 'Self',
-    gender: gender === 'male' ? 'M' : gender === 'female' ? 'F' : undefined,
-    marital_status: maritalStatuses[normalizeKey(body.marital_status)],
-    license_status: normalizeKey(body.license_status) === 'yes' ? 'Active' :
-      normalizeKey(body.license_status) === 'no' ? 'Not Licensed' : undefined,
+    license_status: LICENSE_STATUSES.has(licenseStatus) ? licenseStatus : undefined,
     license_state: clean(body.state, 2).toUpperCase(),
     residence_type: normalizeKey(body.own_or_rent) === 'own' ? 'Own' :
-      normalizeKey(body.own_or_rent) === 'rent' ? 'Rent' : 'Other',
-    occupation: clean(body.occupation, 100),
-    education: educationLevels[normalizeKey(body.highest_level)],
-    requires_sr22: normalizeKey(body.dui) === 'yes'
+      normalizeKey(body.own_or_rent) === 'rent' ? 'Rent' : undefined
   };
 
-  const ticketCount = normalizeKey(body.ticket_count) === '3+' ? 3 :
-    Number.parseInt(clean(body.ticket_count), 10) || 0;
-  if (ticketCount) {
-    driver.tickets = Array.from({ length: ticketCount }, (_, index) => ({
-      ticket_date: dateMonthsAgo(12 + index * 8),
-      description: 'Traffic Ticket'
-    }));
-  }
-  if (normalizeKey(body.at_fault_accident) === 'yes') {
-    driver.accidents = [{
-      accident_date: dateMonthsAgo(14),
-      description: 'Vehicle Hit Vehicle',
-      at_fault: true,
-      damage: 'property'
-    }];
-  }
-  if (normalizeKey(body.dui) === 'yes') {
-    driver.major_violations = [{
-      violation_date: dateMonthsAgo(18),
-      description: 'Drunk Driving',
-      state: clean(body.state, 2).toUpperCase()
-    }];
+  if (Array.isArray(body.incidents)) {
+    for (const incident of body.incidents.slice(0, 10)) {
+      const date = clean(incident && incident.date, 10);
+      const type = clean(incident && incident.type, 30);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+      if (type === 'Ticket') (driver.tickets ||= []).push({ ticket_date: date });
+      if (type === 'Accident') (driver.accidents ||= []).push({ accident_date: date });
+      if (type === 'Major Violation') (driver.major_violations ||= []).push({ violation_date: date });
+    }
   }
 
   if (includeIdentity) {
@@ -143,11 +76,10 @@ function buildMeta(body, req) {
   const consentText = clean(body.consent_text, 4000);
   return compact({
     originally_created: clean(body.consent_timestamp, 40) || new Date().toISOString(),
-    source_id: clean(process.env.JANGL_SOURCE_ID || 'teddydrive_auto_quote', 100),
+    source_id: clean(process.env.JANGL_SOURCE_ID, 100),
     offer_id: randomUUID(),
-    lead_id_code: clean(body.Jornaya_LeadID, 100),
     trusted_form_cert_url: clean(body.xxTrustedFormCertUrl, 500),
-    tcpa_compliant: Boolean(consentText),
+    tcpa_compliant: true,
     tcpa_consent_text: consentText,
     user_agent: clean(req.headers['user-agent'], 500),
     landing_page_url: clean(body.page_url, 1000)
@@ -158,18 +90,19 @@ function buildData(body, includeIdentity) {
   const vehicles = [buildVehicle(body)];
   if (normalizeKey(body.second_vehicle) === 'yes') vehicles.push(buildVehicle(body, '_2'));
 
+  const coverageType = clean(body.coverage_type, 30);
   const data = {
     drivers: [buildDriver(body, includeIdentity)],
     vehicles: vehicles.filter(Boolean),
     requested_policy: {
-      coverage_type: 'Standard'
+      coverage_type: COVERAGE_TYPES.has(coverageType) ? coverageType : undefined
     }
   };
 
   if (normalizeKey(body.has_coverage) === 'yes' && clean(body.former_insurer)) {
     data.current_policy = compact({
       insurance_company: clean(body.former_insurer, 120),
-      insured_since: minimumInsuredSince(body.months_insured)
+      insured_since: clean(body.insured_since, 10)
     });
   }
 
@@ -258,10 +191,26 @@ module.exports = async function handler(req, res) {
   try {
     const body = req.body && typeof req.body === 'object' ? req.body : {};
     requireFields(body, [
-      'zip','year','make','model','birthdate',
+      'zip','year','make','model','birthdate','coverage_type','license_status',
       'first_name','last_name','email','phone','address','city','state',
       'consent_text','consent_timestamp'
     ]);
+    if (normalizeKey(body.has_coverage) === 'yes') {
+      requireFields(body, ['former_insurer', 'insured_since']);
+    }
+    if (normalizeKey(body.second_vehicle) === 'yes') {
+      requireFields(body, ['year_2', 'make_2', 'model_2']);
+    }
+    if (!COVERAGE_TYPES.has(clean(body.coverage_type, 30))) {
+      const error = new Error('Invalid coverage type');
+      error.statusCode = 400;
+      throw error;
+    }
+    if (!LICENSE_STATUSES.has(clean(body.license_status, 30))) {
+      const error = new Error('Invalid license status');
+      error.statusCode = 400;
+      throw error;
+    }
 
     let pingPayload = buildPing(body, req);
     let pingResult = await janglRequest('ping', pingPayload);
