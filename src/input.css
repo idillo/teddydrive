@@ -37,4 +37,15 @@ main{min-height:0;width:100%;padding:10px 22px 7px;overflow:hidden}.intro{width:
 footer{background:rgba(255,255,255,.94);border-top:1px solid #e3edf5;text-align:center;padding:8px 12px;font-size:10px;color:#788794}footer a{color:#657687;text-decoration:none;margin-left:9px}
 @media(max-width:760px){body{grid-template-rows:52px minmax(0,1fr) 29px}.header-inner{height:52px;padding:0 13px}.site-header img{height:37px}main{padding:7px 10px 4px}.intro{margin-bottom:10px}.intro h1{font-size:22px;margin-bottom:7px}.intro p{font-size:14px;line-height:1.34}.intro .bridge{font-size:15px;margin-top:8px}.progress-label{font-size:10px;margin-bottom:3px}.progress{height:6px}.back-wrap{height:27px}.back{padding:5px 0}.card{height:calc(100% - 36px);padding-top:2px}.question{font-size:25px}.sub{font-size:12px;margin-bottom:6px}.yn{gap:9px;margin-top:8px;max-width:360px}.yn button{font-size:19px;border-radius:10px;gap:6px;padding:13px}.circle{width:48px;height:48px}.circle svg{width:27px;height:27px}.g7{grid-template-columns:repeat(4,1fr)}.g6,.g4,.g3,.g2,.make-grid{grid-template-columns:repeat(2,1fr)}.choice{min-height:50px;padding:8px}.years .choice{min-height:50px}.make{min-height:78px}.make img{height:35px}.row{grid-template-columns:1fr}.form{margin-top:5px}.incident-actions{grid-template-columns:1fr}.consent{font-size:8.5px;line-height:1.3}footer{padding:7px 3px;font-size:8px}}
 @media(max-height:700px){.question{font-size:28px}.yn{max-width:440px}.choice{min-height:48px}.years .choice{min-height:48px}.make{min-height:78px}.make img{height:34px}.form{margin-top:4px}.field{margin-bottom:6px}.field input,.field select{padding:10px 12px}.continue{padding:11px 20px}.consent{font-size:8.5px}}
+
+/* Long choice lists use the document scrollbar. This keeps every tile at a
+   usable touch size and prevents the footer from covering the final option. */
+html,body{height:auto;min-height:100%}
+body{display:flex;flex-direction:column;height:auto;min-height:100svh;overflow-x:hidden;overflow-y:auto}
+main{flex:1;overflow:visible}
+.card{height:auto;overflow:visible;padding-bottom:14px}
+.grid,.make-grid{overflow:visible}
+body.initial main{min-height:calc(100svh - 92px)}
+footer{flex:none}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
