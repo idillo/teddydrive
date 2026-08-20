@@ -6,313 +6,139 @@
   <title>Compare Auto Insurance Options | TeddyDrive</title>
   <meta name="description" content="Answer a few questions to review auto insurance options from participating licensed insurance providers.">
   <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#082e5f">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/output.css">
+  <style>
+    :root{--navy:#082e5f;--blue:#1777d4;--orange:#ff7300;--bg:#dceef6;--border:#c8dce8;--green:#86c67c;--red:#e08080;--ink:#0e1628}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%}body{font-family:Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;min-height:100vh}
+    button,input,select{font:inherit}.site-header{height:72px;background:#fff;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #d9e4ec;position:sticky;top:0;z-index:20}.site-header img{height:48px;width:auto}
+    .progress{height:4px;background:#b8d2e7}.progress>span{display:block;height:100%;width:3%;background:var(--blue);transition:width .35s ease}
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:900px;margin:0 auto;padding:16px 16px 0}.tab{padding:10px 8px;text-align:center;border-radius:6px;border-bottom:3px solid transparent;color:#536272;font-size:14px}.tab.active{background:var(--navy);border-bottom-color:var(--blue);color:#fff;font-weight:700}
+    main{flex:1;padding:0 0 64px}.back-wrap{max-width:1000px;width:90%;margin:16px auto -12px}.back{border:0;background:none;color:var(--blue);font-weight:700;cursor:pointer;padding:8px 0}.back:hover{text-decoration:underline}
+    .card{background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(8,46,95,.08);max-width:1000px;width:90%;min-height:540px;margin:28px auto;padding:42px 56px;display:flex;flex-direction:column;justify-content:center;animation:enter .25s ease}@keyframes enter{from{opacity:.3;transform:translateY(8px)}}
+    .icon{text-align:center;margin-bottom:6px}.icon img{width:62px;height:62px;margin:0 auto}.question{text-align:center;font-size:32px;line-height:1.25;font-weight:700;margin:12px auto 8px;max-width:850px}.sub{text-align:center;color:var(--orange);font-size:16px;font-weight:500;margin:0 auto 22px}
+    .yn{display:flex;justify-content:center;gap:24px;margin-top:24px}.yn button{flex:1;max-width:300px;min-height:240px;border:1.5px solid var(--border);border-radius:10px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;font-size:18px;transition:border-color .15s,box-shadow .15s,transform .15s}.yn button:hover,.choice:hover,.make:hover{border-color:var(--orange);box-shadow:0 0 0 2px rgba(255,115,0,.14);transform:translateY(-1px)}
+    .circle{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:43px;font-weight:400;line-height:1}.yes .circle{background:var(--green)}.no .circle{background:var(--red)}
+    .grid{display:grid;gap:12px;margin-top:22px}.g4{grid-template-columns:repeat(4,1fr)}.g7{grid-template-columns:repeat(7,1fr);gap:8px}.g7 .choice{min-height:46px;padding:9px}.g2{grid-template-columns:repeat(2,1fr)}.g1{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}.choice,.make{border:1.5px solid var(--border);border-radius:10px;background:#fff;min-height:56px;padding:15px 18px;color:#333;cursor:pointer;font-weight:500;transition:.15s}.list-choice{display:flex;align-items:center;justify-content:space-between;text-align:left}.list-choice:after{content:'›';font-size:22px;color:var(--blue)}
+    .make-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}.make{min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.make img{height:56px;width:100px;object-fit:contain}.make span{font-size:14px}
+    .form{max-width:560px;margin:24px auto 0}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:500;color:#555;margin:0 0 6px}.field input,.field select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:14px 15px;outline:none;background:#fff}.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,119,212,.12)}.error{min-height:18px;color:#dc2626;font-size:12px;margin-top:5px}.continue{width:100%;max-width:420px;margin:12px auto 0;display:block;border:0;border-radius:8px;background:var(--blue);color:#fff;padding:17px 26px;font-size:18px;font-weight:700;cursor:pointer}.continue:hover{background:#1264b3}.continue:disabled{opacity:.55;cursor:wait}
+    .consent{max-width:560px;margin:16px auto 0;border:1.5px solid var(--border);background:#f6fafd;border-radius:10px;padding:14px 16px;font-size:11px;line-height:1.55;color:#5a6b80}.consent a{color:var(--blue)}
+    .review{max-width:650px;margin:20px auto}.review section{border:1.5px solid var(--border);border-radius:10px;margin:12px 0;overflow:hidden}.review h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;background:#f0f7fc;margin:0;padding:11px 15px}.review-row{display:flex;justify-content:space-between;gap:20px;padding:9px 15px;border-top:1px dashed #e1ebf2;font-size:14px}.review-row span:first-child{color:#718096}.status{text-align:center;padding:34px}.status-mark{width:72px;height:72px;border-radius:50%;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-size:38px;margin:auto}
+    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dbe6ed;text-align:center;padding:10px 16px;font-size:12px;color:#788794;z-index:20}footer a{color:#657687;text-decoration:none;margin-left:10px}
+    @media(max-width:760px){.site-header{height:62px}.site-header img{height:40px}.tabs{gap:4px;padding-top:10px}.tab{font-size:10px;padding:8px 3px}.card{width:95%;min-height:0;margin:18px auto;padding:26px 18px}.question{font-size:23px}.yn{gap:12px}.yn button{min-height:170px}.g4,.g7,.make-grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}}
+    @media(max-width:420px){.card{width:96%;padding:22px 14px}.question{font-size:21px}.yn button{min-height:150px}.circle{width:62px;height:62px}.make{min-height:105px}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  </style>
 </head>
-<body class="min-h-screen overflow-x-hidden bg-[#f4f8fb] text-slate-900 antialiased" style="font-family:'Manrope',sans-serif">
-  <div class="flex min-h-[100svh] flex-col">
-    <header class="bg-white">
-      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-[72px] sm:px-6">
-        <a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive" class="h-10 w-auto sm:h-11"></a>
-        <div class="text-right text-xs font-bold text-slate-500 sm:text-sm">About 2 minutes</div>
-      </div>
-      <div class="h-1 bg-teddyOrange"></div>
-    </header>
-
-    <nav class="border-b border-blue-100 bg-[#eaf5fb]" aria-label="Quote progress">
-      <div class="relative mx-auto grid h-[58px] max-w-4xl grid-cols-4 items-center px-4 sm:h-16">
-        <div class="absolute left-[12.5%] right-[12.5%] top-[20px] h-0.5 bg-blue-200 sm:top-[23px]" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div id="progress-bar" class="h-full bg-teddyBlue transition-all duration-500" style="width:0%"></div>
-        </div>
-        <div data-route-step="vehicle" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-teddyOrange ring-4 ring-[#eaf5fb]"></span><span class="route-label mt-2 block text-[9px] font-extrabold text-teddyNavy sm:text-xs">Vehicle</span></div>
-        <div data-route-step="coverage" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-blue-200 ring-4 ring-[#eaf5fb]"></span><span class="route-label mt-2 block text-[9px] font-bold text-slate-500 sm:text-xs">Coverage</span></div>
-        <div data-route-step="driver" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-blue-200 ring-4 ring-[#eaf5fb]"></span><span class="route-label mt-2 block text-[9px] font-bold text-slate-500 sm:text-xs">Driver</span></div>
-        <div data-route-step="contact" class="relative z-10 text-center"><span class="route-dot mx-auto block h-3 w-3 rounded-full bg-blue-200 ring-4 ring-[#eaf5fb]"></span><span class="route-label mt-2 block text-[9px] font-bold text-slate-500 sm:text-xs">Contact</span></div>
-      </div>
-    </nav>
-
-    <main class="flex min-h-0 w-full flex-1 flex-col bg-[#dceef6] px-3 py-3 sm:px-6 sm:py-5">
-      <section class="relative mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_12px_40px_rgba(8,46,95,.10)]">
-        <div class="absolute left-4 top-3 z-20 sm:left-7 sm:top-5">
-          <button id="back-button" type="button" class="invisible inline-flex min-h-9 items-center gap-1 px-1 text-sm font-extrabold text-teddyBlue hover:text-teddyNavy focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">← Back</button>
-          <span class="hidden"><span id="step-counter">1</span><span id="step-total">1</span></span>
-        </div>
-
-        <form id="quote-form" class="flex min-h-0 flex-1 flex-col justify-center px-5 py-12 sm:px-12 sm:py-14" novalidate>
-          <input type="hidden" name="lead_source" value="teddydrive_auto_quote">
-          <input type="hidden" name="landing_page" value="auto-quote">
-          <input type="hidden" name="consent_timestamp" id="consent_timestamp">
-          <input type="hidden" name="consent_text" id="consent_text">
-          <input type="hidden" name="xxTrustedFormCertUrl" id="xxTrustedFormCertUrl">
-          <input type="hidden" name="Jornaya_LeadID" id="Jornaya_LeadID">
-          <input type="text" name="company_website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div id="question-stage" aria-live="polite"></div>
-        </form>
-
-        <div id="success-panel" class="hidden flex-1 place-items-center px-6 py-10 text-center">
-          <div>
-            <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-4xl font-black text-emerald-700">✓</div>
-            <h1 class="mt-6 text-3xl font-black text-teddyNavy sm:text-4xl">Your request is on its way</h1>
-            <p class="mx-auto mt-3 max-w-lg text-lg leading-7 text-slate-600">A participating licensed insurance agent or provider may contact you about available coverage options.</p>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="border-t border-slate-200 bg-white px-3 py-1.5 text-center text-[9px] leading-4 text-slate-500 sm:text-[10px]">
-      © 2026 Idillo Inc. · <a href="/terms.html" class="hover:text-teddyBlue">Terms &amp; Disclosures</a> · <a href="/privacy.html" class="hover:text-teddyBlue">Privacy Policy</a> · <a href="/privacy.html#do-not-sell" class="hover:text-teddyBlue">Do Not Sell My Info</a>
-    </footer>
-  </div>
+<body>
+  <form id="trusted-form-holder" hidden><input type="hidden" name="xxTrustedFormCertUrl" id="xxTrustedFormCertUrl"><input type="hidden" name="Jornaya_LeadID" id="Jornaya_LeadID"></form>
+  <header class="site-header"><a href="/" aria-label="TeddyDrive home"><img src="/assets/teddydrive-logo.png" alt="TeddyDrive"></a></header>
+  <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3"><span id="progress-fill"></span></div>
+  <nav class="tabs" aria-label="Quote progress"><div class="tab active">Vehicles</div><div class="tab">Auto Coverage</div><div class="tab">Policy &amp; Driver</div><div class="tab">Final Step</div></nav>
+  <main><div class="back-wrap"><button id="back" class="back" type="button" hidden>← Back</button></div><div id="card" class="card" aria-live="polite"></div></main>
+  <footer>© 2026 Idillo Inc.<a href="/terms.html">Terms &amp; Disclosures</a><a href="/privacy.html">Privacy Policy</a><a href="/privacy.html#do-not-sell">Do Not Sell My Info</a></footer>
 
   <script>
-  (() => {
-    const ENDPOINT = '/api/auto-quote';
-    const form = document.getElementById('quote-form');
-    const stage = document.getElementById('question-stage');
-    const backButton = document.getElementById('back-button');
-    const progressBar = document.getElementById('progress-bar');
-    const routeSteps = [...document.querySelectorAll('[data-route-step]')];
-    const stepCounter = document.getElementById('step-counter');
-    const answers = {};
-    const history = [];
-    let index = 0;
-
-    const iconUrl = slug => `https://cdn.simpleicons.org/${slug}`;
-    const makes = [
-      ['Toyota','toyota'],['Ford','ford'],['Chevrolet','chevrolet'],['Honda','honda'],
-      ['Nissan','nissan'],['Hyundai','hyundai'],['Kia','kia'],['Jeep','jeep'],
-      ['Ram','ram'],['GMC','gmc'],['Subaru','subaru'],['Tesla','tesla'],['Other','']
-    ];
-    const carriers = [
-      ['State Farm','statefarm'],['GEICO','geico'],['Progressive','progressive'],
-      ['Allstate','allstate'],['USAA','usaa'],['Liberty Mutual','libertymutual'],
-      ['Nationwide','nationwide'],['Farmers','farmersinsurance'],['Other','']
-    ];
-    const years = Array.from({length: 31}, (_, i) => String(new Date().getFullYear() + 1 - i));
-    const models = {
-      Toyota:['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius','Sienna','4Runner','Other'],
-      Ford:['F-150','Escape','Explorer','Edge','Fusion','Mustang','Bronco','Ranger','Expedition','Other'],
-      Chevrolet:['Silverado','Equinox','Malibu','Traverse','Tahoe','Suburban','Trailblazer','Colorado','Impala','Other'],
-      Honda:['Civic','Accord','CR-V','Pilot','Odyssey','HR-V','Ridgeline','Passport','Other'],
-      Nissan:['Altima','Rogue','Sentra','Pathfinder','Murano','Frontier','Titan','Versa','Maxima','Other'],
-      Hyundai:['Tucson','Elantra','Santa Fe','Sonata','Palisade','Kona','Venue','Accent','Other'],
-      Kia:['Forte','K5 / Optima','Sportage','Sorento','Soul','Telluride','Rio','Carnival','Other'],
-      Jeep:['Wrangler','Grand Cherokee','Cherokee','Compass','Renegade','Gladiator','Wagoneer','Other'],
-      Ram:['1500','2500','3500','ProMaster','Other'],
-      GMC:['Sierra','Terrain','Acadia','Yukon','Canyon','Savana','Other'],
-      Subaru:['Outback','Forester','Crosstrek','Impreza','Legacy','Ascent','WRX','Other'],
-      Tesla:['Model 3','Model Y','Model S','Model X','Cybertruck','Other'],
-      Other:['Other']
+  (()=>{
+    'use strict';
+    const ENDPOINT='/api/auto-quote', card=document.getElementById('card'), back=document.getElementById('back'), fill=document.getElementById('progress-fill'), tabs=[...document.querySelectorAll('.tab')];
+    const answers={}; let current=0, history=[];
+    try{Object.assign(answers,JSON.parse(sessionStorage.getItem('td_quote')||'{}'))}catch(e){}
+    const esc=(s='')=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const logoBase='https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/';
+    const makeNames=['Toyota','Ford','Chevrolet','Honda','Nissan','Hyundai','Kia','Jeep','Ram','GMC','Subaru','Dodge','Chrysler','Buick','Mazda','Volkswagen','Tesla','BMW','Mercedes-Benz','Lexus','Audi','Acura','Cadillac','Lincoln','Volvo','Infiniti','Mitsubishi','Genesis','Land Rover','Porsche','Mini','Jaguar','Alfa Romeo','Fiat','Pontiac','Saturn','Mercury','Hummer','Scion','Suzuki','Isuzu','Saab','Smart','Polestar','Rivian','Maserati','Other'];
+    const logoSlug=n=>n.toLowerCase().replace(/ /g,'-');
+    const models={
+      Toyota:['RAV4','Corolla','Camry','Highlander','Tacoma','Prius','Tundra','Sienna','4Runner','Corolla Cross','Grand Highlander','Other'],Ford:['F-150','Escape','Explorer','Edge','Mustang','Bronco','Ranger','Expedition','Maverick','Bronco Sport','Other'],Chevrolet:['Silverado','Equinox','Traverse','Malibu','Trax','Blazer','Colorado','Tahoe','Suburban','Camaro','Other'],Honda:['CR-V','Civic','Accord','Pilot','HR-V','Odyssey','Ridgeline','Passport','Other'],Nissan:['Rogue','Altima','Sentra','Pathfinder','Frontier','Murano','Kicks','Armada','Other'],Hyundai:['Tucson','Elantra','Santa Fe','Sonata','Palisade','Kona','Venue','Santa Cruz','Ioniq 5','Other'],Kia:['Sorento','Sportage','Forte','Telluride','Soul','Carnival','EV6','K5','Seltos','Other'],Jeep:['Wrangler','Grand Cherokee','Cherokee','Compass','Gladiator','Renegade','Wagoneer','Other'],Ram:['1500','2500','3500','ProMaster','Other'],GMC:['Sierra','Yukon','Acadia','Terrain','Canyon','Hummer EV','Other'],Subaru:['Outback','Forester','Crosstrek','Impreza','Legacy','Ascent','WRX','Other'],Dodge:['Charger','Challenger','Durango','Journey','Grand Caravan','Other'],Chrysler:['300','Pacifica','Town & Country','200','Voyager','Other'],Buick:['Encore','Encore GX','Enclave','Envision','LaCrosse','Regal','Other'],Mazda:['CX-5','Mazda3','CX-9','CX-30','CX-50','Mazda6','MX-5 Miata','Other'],Volkswagen:['Jetta','Tiguan','Atlas','Passat','Golf','Taos','ID.4','Other'],Tesla:['Model 3','Model Y','Model S','Model X','Cybertruck','Other'],BMW:['3 Series','5 Series','X3','X5','X1','4 Series','X7','Other'],'Mercedes-Benz':['C-Class','E-Class','GLC','GLE','A-Class','S-Class','GLA','Other'],Lexus:['RX','ES','NX','IS','GX','UX','Other'],Audi:['A4','Q5','Q7','A6','Q3','A3','Other'],Acura:['MDX','RDX','TLX','ILX','Integra','Other'],Cadillac:['Escalade','XT5','CT5','XT4','CT4','XT6','Other'],Lincoln:['Navigator','Aviator','Nautilus','Corsair','MKZ','Other'],Volvo:['XC90','XC60','XC40','S60','S90','Other'],Infiniti:['Q50','QX60','QX80','Q60','QX50','Other'],Mitsubishi:['Outlander','Outlander Sport','Eclipse Cross','Mirage','Other'],Genesis:['G70','G80','GV70','GV80','Other'],'Land Rover':['Range Rover','Range Rover Sport','Range Rover Evoque','Discovery','Defender','Other'],Porsche:['Cayenne','Macan','911','Panamera','Taycan','Other'],Mini:['Cooper','Countryman','Clubman','Other'],Jaguar:['F-Pace','E-Pace','XF','XE','F-Type','Other'],'Alfa Romeo':['Giulia','Stelvio','4C','Giulietta','Tonale','Other'],Fiat:['500','500X','500L','124 Spider','500e','Panda','Other'],Pontiac:['G6','Grand Prix','Grand Am','Vibe','G8','G5','Sunfire','Bonneville','Torrent','Solstice','GTO','Aztek','Firebird','Montana','Other'],Saturn:['Vue','Ion','Aura','Outlook','SL','SC','Astra','Sky','Relay','L300','Other'],Mercury:['Grand Marquis','Mariner','Milan','Mountaineer','Sable','Marauder','Cougar','Monterey','Montego','Marquis','Other'],Hummer:['H2','H3','H3T','H1','Other'],Scion:['tC','xB','xD','iQ','FR-S','iA','iM','xA','Other'],Suzuki:['Grand Vitara','SX4','Kizashi','Forenza','XL7','Equator','Reno','Verona','Aerio','Vitara','Other'],Isuzu:['Ascender','Rodeo','Trooper','i-Series','Amigo','Axiom','Hombre','VehiCROSS','Other'],Saab:['9-3','9-5','9-7X','9-4X','9-2X','900','9000','Other'],Smart:['Fortwo','Forfour','Fortwo Electric Drive','Other'],Polestar:['Polestar 2','Polestar 1','Polestar 3','Polestar 4','Other'],Rivian:['R1T','R1S','Other'],Maserati:['Ghibli','Levante','Quattroporte','GranTurismo','GranCabrio','Grecale','MC20','Other'],Other:['Other']
     };
-
-    const steps = [
-      { section:'vehicle', key:'has_coverage', type:'choice', title:'Are you currently insured?', choices:['Yes','No'] },
-      { section:'vehicle', key:'year', type:'choice', title:"What's the year of your vehicle?", choices:years, grid:'grid-cols-6', scroll:true },
-      { section:'vehicle', key:'make', type:'logo', title:"What's the make of your vehicle?", choices:makes },
-      { section:'vehicle', key:'model', type:'model', title:`What's the model of your vehicle?` },
-      { section:'vehicle', key:'owned_or_leased', type:'choice', title:'How is this vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3' },
-      { section:'vehicle', key:'use', type:'choice', title:'What is the primary use?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2' },
-      { section:'vehicle', key:'second_vehicle', type:'choice', title:'Would you like to add a second vehicle?', sub:'Save an additional 20%', choices:['Yes','No'] },
-      { section:'vehicle', key:'year_2', type:'choice', title:"What's the year of your second vehicle?", choices:years, grid:'grid-cols-6', scroll:true, when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'make_2', type:'logo', title:"What's the make of your second vehicle?", choices:makes, when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'model_2', type:'model', title:"What's the model of your second vehicle?", when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'owned_or_leased_2', type:'choice', title:'How is your second vehicle financed?', choices:['Owned','Financed','Leased'], grid:'grid-cols-1 sm:grid-cols-3', when:a => a.second_vehicle === 'Yes' },
-      { section:'vehicle', key:'use_2', type:'choice', title:'What is the primary use for your second vehicle?', choices:['Commute to work','Pleasure','Business','School'], grid:'grid-cols-2', when:a => a.second_vehicle === 'Yes' },
-      { section:'coverage', key:'former_insurer', type:'logo', title:'Who is your current insurance provider?', choices:carriers, when:a => a.has_coverage === 'Yes' },
-      { section:'coverage', key:'months_insured', type:'choice', title:'How long have you been continuously insured?', sub:'Five or more years may qualify you for better rates', choices:['Less than 1 year','1–2 years','3–4 years','5+ years'], grid:'grid-cols-2', when:a => a.has_coverage === 'Yes' },
-      { section:'driver', key:'gender', type:'choice', title:'What is your gender?', choices:['Male','Female'] },
-      { section:'driver', key:'marital_status', type:'choice', title:'What is your marital status?', choices:['Single','Married','Divorced','Separated','Widowed','Domestic partner'], grid:'grid-cols-2 sm:grid-cols-3' },
-      { section:'driver', key:'highest_level', type:'choice', title:'What is your highest education level?', choices:['High school','Some college','Associate degree',"Bachelor's degree",'Graduate degree','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
-      { section:'driver', key:'occupation', type:'choice', title:'What best describes your occupation?', choices:['Employed','Self-employed','Retired','Student','Homemaker','Unemployed','Other'], grid:'grid-cols-2 sm:grid-cols-3' },
-      { section:'driver', key:'credit_rating', type:'choice', title:'How would you estimate your credit?', sub:"Most people select “Good.” This does not affect your credit score.", choices:['Excellent','Good','Average','Poor or fair'], grid:'grid-cols-2' },
-      { section:'driver', key:'ticket_count', type:'choice', title:'Tickets in the past three years?', choices:['0','1','2','3+'], grid:'grid-cols-2 sm:grid-cols-4' },
-      { section:'driver', key:'license_status', type:'choice', title:'Do you have an active driver’s license?', choices:['Yes','No'] },
-      { section:'driver', key:'at_fault_accident', type:'choice', title:'Any at-fault accidents in the past three years?', choices:['Yes','No'] },
-      { section:'driver', key:'dui', type:'choice', title:'Any DUI convictions in the past three years?', choices:['Yes','No'] },
-      { section:'driver', key:'birthdate', type:'date', title:"What's your date of birth?", validate:v => { const d=new Date(v), now=new Date(); let age=now.getFullYear()-d.getFullYear(); if(now < new Date(now.getFullYear(),d.getMonth(),d.getDate())) age--; return age >= 18 && age <= 100; }, error:'Enter a valid birthdate for a driver age 18 or older.' },
-      { section:'driver', key:'own_or_rent', type:'choice', title:'Do you own or rent your home?', choices:['Own','Rent','Other'] },
-      { section:'driver', key:'bundle_interest', type:'choice', title:'Would you like to bundle your auto and home insurance policies?', sub:'Drivers who bundle their policies save an average of 20%!', choices:['Yes','No'] },
-      { section:'driver', key:'military', type:'choice', title:'Have you or your spouse served in the U.S. military?', choices:['Yes','No'] },
-      { section:'contact', key:'name', type:'name', title:"What's your name?", sub:'Your information is secure and used to match available options.' },
-      { section:'contact', key:'address', type:'address', title:"What's your current address?" },
-      { section:'contact', key:'email', type:'email', title:"What's your email address?", placeholder:'you@example.com', autocomplete:'email' },
-      { section:'contact', key:'phone', type:'phone', title:'Where can a licensed agent reach you?', placeholder:'(555) 555-5555', autocomplete:'tel' },
-      { section:'contact', key:'review', type:'review', title:'Review your information' }
+    const years=[...Array.from({length:28},(_,i)=>String(2027-i)),'Older'];
+    const providers=['AAA / Auto Club','Allstate','Farm Bureau','Farmers','GEICO','Liberty Mutual','Nationwide','Progressive','State Farm','Travelers','USAA','Other'];
+    const education=['Some/No High School','High School Diploma','GED','Some College','Associate Degree','Bachelors Degree','Masters Degree','Doctoral Degree','Trade/Vocational'];
+    const occupations=['Administrative Clerical','Business Owner','Construction Trades','Disabled','Manager/Supervisor','Other Non-technical','Other Technical','Retail','Retired','Self Employed','Student','Unemployed'];
+    const states='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ');
+    const icon=(name='Vehicle')=>`<div class="icon"><img src="https://de9q1kctwv79w.cloudfront.net/~_~static-assets/3313/img/${name}.svg" alt=""></div>`;
+    const steps=[
+      {k:'has_coverage',s:0,t:'Are you currently insured?',type:'yn'},
+      {k:'own_or_rent',s:0,t:'Do you own or rent your home?',type:'yn',o:['Own','Rent']},
+      {k:'bundle_interest',s:0,t:'Would you like to bundle your auto and home insurance policies?',sub:'Drivers who bundle their policies save an average of 20%!',type:'yn',when:a=>a.own_or_rent==='Own'},
+      {k:'zip',s:0,t:'What is your ZIP code?',type:'zip'},
+      {k:'year',s:0,t:"What's the year of your vehicle?",type:'years'},
+      {k:'make',s:0,t:"What's the make of your vehicle?",type:'makes'},
+      {k:'model',s:0,t:()=>`What's the model of your ${answers.make||'vehicle'}?`,type:'models'},
+      {k:'owned_or_leased',s:0,t:()=>`Do you own or lease your ${vehicleName()}?`,type:'list',o:['Owned','Financed','Leased']},
+      {k:'use',s:0,t:()=>`What is the primary use for your ${[answers.year,answers.make].filter(Boolean).join(' ')}?`,type:'list',o:['Commute','Pleasure','Business','Farm']},
+      {k:'second_vehicle',s:0,t:'Would you like to add a second vehicle?',sub:'Save an additional 20%',type:'yn'},
+      {k:'year_2',s:0,t:"What's the year of your second vehicle?",type:'years',when:a=>a.second_vehicle==='Yes'},
+      {k:'make_2',s:0,t:"What's the make of your second vehicle?",type:'makes',when:a=>a.second_vehicle==='Yes'},
+      {k:'model_2',s:0,t:()=>`What's the model of your ${answers.make_2||'second vehicle'}?`,type:'models',when:a=>a.second_vehicle==='Yes'},
+      {k:'owned_or_leased_2',s:0,t:()=>`Do you own or lease your ${vehicleName('_2')}?`,type:'list',o:['Owned','Financed','Leased'],when:a=>a.second_vehicle==='Yes'},
+      {k:'use_2',s:0,t:'What is the primary use for your second vehicle?',type:'list',o:['Commute','Pleasure','Business','Farm'],when:a=>a.second_vehicle==='Yes'},
+      {k:'former_insurer',s:1,t:'Who is your current insurance provider?',type:'list',o:providers,when:a=>a.has_coverage==='Yes'},
+      {k:'months_insured',s:1,t:'How long have you been continuously insured?',sub:'Five or more years may qualify you for better rates',type:'list',o:['Less than 1 year','1–2 years','3–4 years','5+ years'],when:a=>a.has_coverage==='Yes'},
+      {k:'gender',s:2,t:'What is your gender?',type:'yn',o:['Male','Female'],neutral:true},
+      {k:'marital_status',s:2,t:'What is your marital status?',type:'yn',o:['Married','Single'],neutral:true},
+      {k:'highest_level',s:2,t:'What is your education level?',type:'grid',o:education},
+      {k:'occupation',s:2,t:'What is your occupation?',type:'grid',o:occupations},
+      {k:'credit_rating',s:2,t:'Estimate Your Credit Rating',sub:"Most people have a 'Good' or 'Excellent' rating",type:'grid',o:['Excellent','Good','Average','Poor or Fair']},
+      {k:'ticket_count',s:2,t:'How many tickets have you had in the past three (3) years?',type:'grid',o:['0','1','2','3+']},
+      {k:'license_status',s:2,t:'Do you have an active license?',type:'yn'},
+      {k:'at_fault_accident',s:2,t:'Have you had an at-fault accident in the past (3) years?',type:'yn'},
+      {k:'dui',s:2,t:'Have you had a DUI conviction in the past (3) years?',type:'yn'},
+      {k:'birthdate',s:2,t:"What's your date of birth?",type:'dob'},
+      {k:'military',s:2,t:'Have you or your spouse ever honorably served in the U.S. military?',type:'yn'},
+      {k:'name',s:3,t:'What is your name?',sub:'Personal Information is Safe & Secure',type:'name'},
+      {k:'address',s:3,t:'What is your address?',type:'address'},
+      {k:'email',s:3,t:"What's your email?",sub:'We take privacy seriously. No spam!',type:'email'},
+      {k:'phone',s:3,t:'Your options are ready to review!',sub:'Enter your number so a participating licensed insurance agent or provider may contact you.',type:'phone'},
+      {k:'review',s:3,t:'Review Your Information',type:'review'}
     ];
-
-    document.getElementById('step-total').textContent = steps.length;
-
-    function activeSteps() { return steps.filter(s => !s.when || s.when(answers)); }
-    function esc(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
-    function heading(step) {
-      return `<div class="mx-auto text-center"><h1 class="text-3xl font-extrabold leading-tight tracking-[-.025em] text-[#071b3f] sm:text-[42px]">${esc(step.title)}</h1>${step.sub ? `<p class="mx-auto mt-2 max-w-xl text-sm font-bold leading-6 text-teddyBlue sm:text-base">${esc(step.sub)}</p>` : ''}</div>`;
+    function visible(){return steps.filter(x=>!x.when||x.when(answers))}function vehicleName(s=''){return [answers['year'+s],answers['make'+s],answers['model'+s]].filter(Boolean).join(' ')}
+    function save(){try{sessionStorage.setItem('td_quote',JSON.stringify(answers))}catch(e){}}function title(x){return typeof x.t==='function'?x.t():x.t}
+    function choice(v,cls='choice'){return `<button type="button" class="${cls}" data-value="${esc(v)}">${esc(v)}</button>`}
+    function yn(x){const opts=x.o||['Yes','No'];if(x.neutral)return `<div class="yn">${opts.map(v=>choice(v,'choice')).join('')}</div>`;return `<div class="yn">${opts.map((v,i)=>`<button type="button" class="${i?'no':'yes'}" data-value="${esc(v)}"><span class="circle">${i?'×':'✓'}</span><strong>${esc(v)}</strong></button>`).join('')}</div>`}
+    function renderBody(x){
+      if(x.type==='yn')return yn(x);
+      if(x.type==='years')return `<div class="grid g7">${years.map(v=>choice(v)).join('')}</div>`;
+      if(x.type==='makes')return `<div class="make-grid">${makeNames.map(n=>`<button type="button" class="make" data-value="${esc(n)}">${n==='Other'?'<b style="font-size:25px;color:var(--blue)">•••</b>':`<img src="${logoBase+logoSlug(n)}.png" alt="${esc(n)}" loading="lazy" onerror="this.style.display='none'">`}<span>${esc(n)}</span></button>`).join('')}</div>`;
+      if(x.type==='models'){const m=answers[x.k==='model_2'?'make_2':'make']||'Other';return `<div class="grid g1">${(models[m]||models.Other).map(v=>choice(v,'choice list-choice')).join('')}</div>`}
+      if(x.type==='list')return `<div class="grid g1">${x.o.map(v=>choice(v,'choice list-choice')).join('')}</div>`;
+      if(x.type==='grid')return `<div class="grid g2">${x.o.map(v=>choice(v)).join('')}</div>`;
+      if(x.type==='zip')return formFields(`<div class="field"><label>ZIP Code</label><input id="zip-only" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="postal-code" value="${esc(answers.zip||'')}"></div>`);
+      if(x.type==='dob')return formFields(`<div class="field"><label>Date of Birth</label><input id="dob" inputmode="numeric" placeholder="MM/DD/YYYY" maxlength="10" value="${esc(answers.birthdateDisplay||'')}"></div>`);
+      if(x.type==='name')return formFields(`<div class="row"><div class="field"><label>First Name</label><input id="first" autocomplete="given-name" value="${esc(answers.first_name||'')}"></div><div class="field"><label>Last Name</label><input id="last" autocomplete="family-name" value="${esc(answers.last_name||'')}"></div></div>`);
+      if(x.type==='address')return formFields(`<div class="field"><label>Street Address</label><input id="street" autocomplete="street-address" value="${esc(answers.address||'')}"></div><div class="row"><div class="field"><label>City</label><input id="city" autocomplete="address-level2" value="${esc(answers.city||'')}"></div><div class="field"><label>State</label><select id="state"><option value="">Select</option>${states.map(s=>`<option ${answers.state===s?'selected':''}>${s}</option>`).join('')}</select></div></div>`);
+      if(x.type==='email')return formFields(`<div class="field"><label>Email Address</label><input id="single" type="email" autocomplete="email" value="${esc(answers.email||'')}"></div>`);
+      if(x.type==='phone')return formFields(`<div class="field"><label>Phone Number</label><input id="single" type="tel" inputmode="tel" autocomplete="tel" maxlength="14" value="${esc(answers.phone||'')}"></div><div class="consent" id="consent-copy">By clicking <strong>“See My Options,”</strong> I provide my express written consent for TeddyDrive.com, Idillo Inc., its <a href="/terms.html" target="_blank">marketing partners</a>, and participating licensed insurance agents or providers to contact me at the phone number and email I provided, including by calls or texts using automated technology or prerecorded messages, even if my number is on a Do Not Call registry. Consent is not a condition of purchase. Message and data rates may apply. I am at least 18 years old and agree to the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>.</div>`,'See My Options ›');
+      if(x.type==='review')return review(); return '';
     }
-    function choiceMarkup(step) {
-      const grid = step.grid || 'grid-cols-2';
-      const binary = step.choices.length === 2 && step.choices[0] === 'Yes' && step.choices[1] === 'No';
-      const isYear = step.key === 'year' || step.key === 'year_2';
-      if (isYear) return `<div class="mt-5 sm:hidden"><select id="year-select" class="quote-field"><option value="">Select vehicle year</option>${step.choices.map(choice=>`<option ${answers[step.key]===choice?'selected':''}>${choice}</option>`).join('')}</select></div><div class="mt-5 hidden grid-cols-6 gap-2 sm:grid">${step.choices.map(choice => `<button type="button" class="quote-choice min-h-12 py-2 ${answers[step.key]===choice?'selected':''}" data-value="${choice}">${choice}</button>`).join('')}</div>`;
-      return `<div class="mx-auto mt-6 grid w-full ${grid} gap-3 sm:mt-8 sm:max-w-4xl">${step.choices.map(choice => `<button type="button" class="quote-choice ${binary?'binary':''} ${answers[step.key]===choice?'selected':''}" data-value="${esc(choice)}">${binary ? `<span class="binary-icon" aria-hidden="true">${choice === 'Yes' ? '✓' : '×'}</span>` : ''}<span>${esc(choice)}</span></button>`).join('')}</div>`;
+    function formFields(inner,label='Continue ›'){return `<div class="form">${inner}<div id="error" class="error"></div><button type="button" id="continue" class="continue">${label}</button></div>`}
+    function render(){const v=visible();current=Math.max(0,Math.min(current,v.length-1));const x=v[current],pct=Math.round(((current+1)/v.length)*100);fill.style.width=pct+'%';fill.parentElement.setAttribute('aria-valuenow',pct);tabs.forEach((t,i)=>t.classList.toggle('active',i===x.s));back.hidden=current===0;card.innerHTML=`${icon(x.s<2?'Vehicle':'FinalStep')}<div class="question">${esc(title(x))}</div>${x.sub?`<div class="sub">${esc(x.sub)}</div>`:''}${renderBody(x)}`;bind(x);window.scrollTo({top:0,behavior:'smooth'})}
+    function bind(x){card.querySelectorAll('[data-value]').forEach(b=>b.onclick=()=>{answers[x.k]=b.dataset.value;save();history.push(current);current++;render()});const c=document.getElementById('continue');if(c)c.onclick=()=>submitStep(x);card.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();submitStep(x)}})}
+    function fail(m){const e=document.getElementById('error');if(e)e.textContent=m}
+    function submitStep(x){
+      if(x.type==='zip'){const v=document.getElementById('zip-only').value.replace(/\D/g,'');if(!/^\d{5}$/.test(v))return fail('Please enter a valid 5-digit ZIP code.');answers.zip=v}
+      else if(x.type==='dob'){const v=document.getElementById('dob').value.trim(),m=v.match(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(\d{4})$/);if(!m)return fail('Please enter a valid date (MM/DD/YYYY).');const d=new Date(+m[3],+m[1]-1,+m[2]),now=new Date();let age=now.getFullYear()-d.getFullYear();if(now<new Date(now.getFullYear(),d.getMonth(),d.getDate()))age--;if(age<18||age>110)return fail('Please enter a valid birthdate for a driver age 18 or older.');answers.birthdate=`${m[3]}-${m[1]}-${m[2]}`;answers.birthdateDisplay=v}
+      else if(x.type==='name'){answers.first_name=document.getElementById('first').value.trim();answers.last_name=document.getElementById('last').value.trim();if(!answers.first_name||!answers.last_name)return fail('First and last name are required.')}
+      else if(x.type==='address'){answers.address=document.getElementById('street').value.trim();answers.city=document.getElementById('city').value.trim();answers.state=document.getElementById('state').value;if(!answers.address||!answers.city||!answers.state)return fail('Enter your complete street address, city, and state.')}
+      else if(x.type==='email'){const v=document.getElementById('single').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))return fail('Please enter a valid email address.');answers.email=v}
+      else if(x.type==='phone'){const raw=document.getElementById('single').value,d=raw.replace(/\D/g,'');if(d.length!==10)return fail('Please enter a valid 10-digit phone number.');answers.phone=d;answers.consent_timestamp=new Date().toISOString();answers.consent_text=document.getElementById('consent-copy').innerText;answers.xxTrustedFormCertUrl=document.getElementById('xxTrustedFormCertUrl').value;answers.Jornaya_LeadID=document.getElementById('Jornaya_LeadID').value;answers.page_url=location.href.split('?')[0]}
+      save();history.push(current);current++;render()
     }
-    function logoMarkup(step) {
-      return `<div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">${step.choices.map(([label,slug]) => `<button type="button" class="quote-choice min-h-20 flex-col gap-2 bg-white py-3 ${answers[step.key]===label?'selected':''}" data-value="${esc(label)}">${slug?`<img src="${iconUrl(slug)}" alt="" class="h-9 w-24 object-contain" loading="lazy" onerror="this.style.display='none'">`:`<span class="text-2xl text-teddyOrange">•••</span>`}<span class="text-sm">${esc(label)}</span></button>`).join('')}</div>`;
-    }
-    function modelMarkup(step) {
-      const make = answers[step.key === 'model_2' ? 'make_2' : 'make'] || 'Other';
-      const choices = models[make] || models.Other;
-      return `<div class="mt-6 grid gap-2 sm:max-w-4xl sm:grid-cols-2">${choices.map(model => `<button type="button" class="quote-choice justify-between bg-white px-5 text-left ${answers[step.key]===model?'selected':''}" data-value="${esc(model)}"><span>${esc(model)}</span><span class="text-xl text-teddyBlue">›</span></button>`).join('')}</div>`;
-    }
-    function fieldMarkup(step, type='text') {
-      const value = answers[step.key] || '';
-      return `<div class="mx-auto mt-6 max-w-xl"><input id="active-input" class="quote-field text-center" type="${type}" name="${esc(step.key)}" value="${esc(value)}" placeholder="${esc(step.placeholder||'')}" inputmode="${esc(step.inputmode||'')}" autocomplete="${esc(step.autocomplete||'off')}"><p id="field-error" class="mt-2 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary mt-2">Continue →</button></div>`;
-    }
-    function nameMarkup() {
-      return `<div class="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2"><input id="first-name" class="quote-field" autocomplete="given-name" placeholder="First name" value="${esc(answers.first_name||'')}"><input id="last-name" class="quote-field" autocomplete="family-name" placeholder="Last name" value="${esc(answers.last_name||'')}"><p id="field-error" class="min-h-5 text-sm font-bold text-red-600 sm:col-span-2"></p><button type="button" id="continue-button" class="quote-primary sm:col-span-2">Continue →</button></div>`;
-    }
-    function addressMarkup() {
-      return `<div class="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-3"><input id="street" class="quote-field col-span-2" autocomplete="street-address" placeholder="Street address" value="${esc(answers.address||'')}"><input id="city" class="quote-field" autocomplete="address-level2" placeholder="City" value="${esc(answers.city||'')}"><select id="state" class="quote-field" autocomplete="address-level1"><option value="">State</option>${'AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split(' ').map(s=>`<option ${answers.state===s?'selected':''}>${s}</option>`).join('')}</select><input id="address-zip" class="quote-field col-span-2" autocomplete="postal-code" inputmode="numeric" maxlength="5" placeholder="ZIP code" value="${esc(answers.zip||'')}"><p id="field-error" class="col-span-2 min-h-5 text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary col-span-2">Continue →</button></div>`;
-    }
-    function reviewMarkup() {
-      const vehicle = [answers.year, answers.make, answers.model].filter(Boolean).join(' ');
-      const rows = [
-        ['Vehicle',vehicle],['Insurance',answers.has_coverage==='Yes' ? answers.former_insurer : 'Not currently insured'],
-        ['Driver',`${answers.first_name||''} ${answers.last_name||''}`.trim()],
-        ['Address',[answers.address,answers.city,answers.state,answers.zip].filter(Boolean).join(', ')],
-        ['Email',answers.email],['Phone',answers.phone]
-      ];
-      const consent = `By clicking “Review My Options,” I provide my electronic signature and agree that Idillo Inc., TeddyDrive, participating licensed insurance agents or providers, and the marketing partners identified in the linked disclosure may contact me at the phone number and email I provided about insurance products, including by calls or texts using automated technology or prerecorded messages, even if my number is on a Do Not Call list. Consent is not a condition of purchase. Message and data rates may apply.`;
-      return `<div class="mx-auto mt-4 max-w-2xl"><div class="grid gap-x-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">${rows.map(([k,v])=>`<div class="border-b border-slate-200 py-2"><p class="text-xs font-black uppercase tracking-wide text-slate-400">${esc(k)}</p><p class="mt-0.5 font-extrabold text-slate-800">${esc(v||'Not provided')}</p></div>`).join('')}</div><label class="mt-3 flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-slate-200 p-3"><input id="consent" type="checkbox" class="mt-1 h-5 w-5 shrink-0 accent-[#1777d4]"><span id="consent-copy" class="text-[10px] leading-4 text-slate-600">${consent} <a href="/terms.html" target="_blank" class="font-bold text-teddyBlue underline">Terms</a> and <a href="/privacy.html" target="_blank" class="font-bold text-teddyBlue underline">Privacy Policy</a>.</span></label><p id="field-error" class="mt-1 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="submit" id="submit-button" class="quote-primary">Review My Options →</button></div>`;
-    }
-
-    function render() {
-      const visible = activeSteps();
-      if (index >= visible.length) index = visible.length - 1;
-      const step = visible[index];
-      const sectionOrder = ['vehicle','coverage','driver','contact'];
-      const sectionIndex = sectionOrder.indexOf(step.section);
-      const routePct = sectionIndex * (100 / (sectionOrder.length - 1));
-      progressBar.style.width = routePct + '%';
-      progressBar.parentElement.setAttribute('aria-valuenow', Math.round(routePct));
-      routeSteps.forEach((routeStep, routeIndex) => {
-        const dot = routeStep.querySelector('.route-dot');
-        const label = routeStep.querySelector('.route-label');
-        dot.style.backgroundColor = routeIndex === sectionIndex ? '#ff7300' : routeIndex < sectionIndex ? '#1777d4' : '#cbd5e1';
-        label.style.color = routeIndex <= sectionIndex ? '#082e5f' : '#94a3b8';
-      });
-      stepCounter.textContent = index + 1;
-      document.getElementById('step-total').textContent = visible.length;
-      backButton.classList.toggle('invisible', index === 0);
-      let body = '';
-      if (step.type === 'choice') body = choiceMarkup(step);
-      else if (step.type === 'logo') body = logoMarkup(step);
-      else if (step.type === 'model') body = modelMarkup(step);
-      else if (step.type === 'name') body = nameMarkup();
-      else if (step.type === 'address') body = addressMarkup();
-      else if (step.type === 'review') body = reviewMarkup();
-      else if (step.type === 'select') body = `<div class="mx-auto mt-6 max-w-xl"><select id="active-input" class="quote-field text-center"><option value="">Select state</option>${step.options.map(value=>`<option ${answers[step.key]===value?'selected':''}>${value}</option>`).join('')}</select><p id="field-error" class="mt-2 min-h-5 text-center text-sm font-bold text-red-600"></p><button type="button" id="continue-button" class="quote-primary mt-2">Continue →</button></div>`;
-      else body = fieldMarkup(step, step.type === 'phone' ? 'tel' : step.type);
-      stage.innerHTML = heading(step) + body + (step.note ? `<p class="mt-3 text-center text-xs text-slate-400">${esc(step.note)}</p>` : '');
-      bind(step);
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function advance() { history.push(index); index++; render(); }
-    function bind(step) {
-      stage.querySelectorAll('[data-value]').forEach(button => button.addEventListener('click', () => {
-        answers[step.key] = button.dataset.value;
-        button.classList.add('selected');
-        setTimeout(advance, 120);
-      }));
-      const yearSelect = document.getElementById('year-select');
-      if (yearSelect) yearSelect.addEventListener('change', () => { if(yearSelect.value){ answers[step.key]=yearSelect.value; advance(); } });
-      const continueButton = document.getElementById('continue-button');
-      if (!continueButton) return;
-      const submitCurrent = () => {
-        let value = '';
-        if (step.type === 'name') {
-          answers.first_name = document.getElementById('first-name').value.trim();
-          answers.last_name = document.getElementById('last-name').value.trim();
-          if (!answers.first_name || !answers.last_name) return showError('Enter your first and last name.');
-        } else if (step.type === 'address') {
-          answers.address = document.getElementById('street').value.trim();
-          answers.city = document.getElementById('city').value.trim();
-          answers.state = document.getElementById('state').value;
-          answers.zip = document.getElementById('address-zip').value.replace(/\D/g,'').slice(0,5);
-          if (!answers.address || !answers.city || !answers.state || !/^\d{5}$/.test(answers.zip)) return showError('Enter your complete address and 5-digit ZIP code.');
-        } else {
-          const input = document.getElementById('active-input'); value = input.value.trim();
-          if (step.type === 'phone') {
-            const digits=value.replace(/\D/g,''); if(digits.length!==10) return showError('Enter a valid 10-digit phone number.');
-            value=digits;
-          } else if (step.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return showError('Enter a valid email address.');
-          else if (!value || (step.validate && !step.validate(value))) return showError(step.error || 'Complete this field to continue.');
-          answers[step.key] = value;
-        }
-        advance();
-      };
-      continueButton.addEventListener('click', submitCurrent);
-      stage.querySelectorAll('input').forEach(input => input.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();submitCurrent();} }));
-    }
-    function showError(message) { const el=document.getElementById('field-error'); if(el) el.textContent=message; }
-
-    backButton.addEventListener('click', () => { if(index>0){ index--; render(); } });
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      const consent = document.getElementById('consent');
-      if (!consent || !consent.checked) return showError('Please provide consent before continuing.');
-      const button = document.getElementById('submit-button');
-      button.disabled = true; button.textContent = 'Submitting…';
-      document.getElementById('consent_timestamp').value = new Date().toISOString();
-      document.getElementById('consent_text').value = document.getElementById('consent-copy').innerText;
-      answers.consent_timestamp = document.getElementById('consent_timestamp').value;
-      answers.consent_text = document.getElementById('consent_text').value;
-      answers.xxTrustedFormCertUrl = document.getElementById('xxTrustedFormCertUrl').value;
-      answers.Jornaya_LeadID = document.getElementById('Jornaya_LeadID').value;
-      answers.page_url = location.href.split('?')[0];
-      try {
-        const response = await fetch(ENDPOINT,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(answers)
-        });
-        const result = await response.json();
-        if(!response.ok || !result.success) throw new Error(result.message || 'Submission failed');
-        form.classList.add('hidden');
-        document.getElementById('success-panel').classList.remove('hidden');
-        document.getElementById('success-panel').classList.add('grid');
-        progressBar.style.width='100%';
-      } catch (error) {
-        showError('We could not submit your request. Please try again.');
-        button.disabled=false; button.textContent='Review My Options →';
-      }
-    });
-
-    const params = new URLSearchParams(location.search);
-    const allowedPrefill = ['year','make','model','has_coverage','former_insurer'];
-    allowedPrefill.forEach(key => { if(params.get(key)) answers[key]=params.get(key).slice(0,100); });
+    function review(){const rows=[['Vehicle',vehicleName()],['Second vehicle',answers.second_vehicle==='Yes'?vehicleName('_2'):'No'],['Currently insured',answers.has_coverage],['Provider',answers.former_insurer],['Driver',[answers.first_name,answers.last_name].filter(Boolean).join(' ')],['Address',[answers.address,answers.city,answers.state,answers.zip].filter(Boolean).join(', ')],['Email',answers.email],['Phone',answers.phone]];return `<div class="review"><section><h2>Your information</h2>${rows.map(r=>`<div class="review-row"><span>${esc(r[0])}</span><strong>${esc(r[1]||'Not provided')}</strong></div>`).join('')}</section><div id="error" class="error"></div><button type="button" id="submit" class="continue">Submit My Request ›</button></div>`}
+    async function send(){const b=document.getElementById('submit');b.disabled=true;b.textContent='Submitting…';try{const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(answers)}),j=await r.json();if(!r.ok||!j.success)throw new Error(j.message||'No match');card.innerHTML=`<div class="status"><div class="status-mark">✓</div><div class="question">Your request is on its way</div><p>A participating licensed insurance agent or provider may contact you about available coverage options.</p></div>`;fill.style.width='100%';tabs.forEach((t,i)=>t.classList.toggle('active',i===3));back.hidden=true}catch(e){fail(e.message||'We could not submit your request. Please try again.');b.disabled=false;b.textContent='Submit My Request ›'}}
+    back.onclick=()=>{if(current>0){current--;render()}};card.addEventListener('click',e=>{if(e.target.closest('#submit'))send()});
+    const params=new URLSearchParams(location.search),prefill={fname:'first_name',firstname:'first_name',lname:'last_name',lastname:'last_name',email:'email',phone:'phone',zip:'zip',address:'address',city:'city',state:'state',dob:'birthdate',year:'year',make:'make',model:'model',ownership:'owned_or_leased',use:'use',insured:'has_coverage',provider:'former_insurer',gender:'gender',marital:'marital_status',education:'highest_level',occupation:'occupation',credit:'credit_rating',tickets:'ticket_count',license:'license_status',accident:'at_fault_accident',dui:'dui',homeownership:'own_or_rent',bundle:'bundle_interest',military:'military',second_vehicle:'second_vehicle',year2:'year_2',make2:'make_2',model2:'model_2'};
+    Object.entries(prefill).forEach(([p,k])=>{if(params.get(p))answers[k]=params.get(p).slice(0,150)});
+    if([...params.keys()].some(k=>prefill[k])){const v=visible(),done=x=>x.type==='name'?answers.first_name&&answers.last_name:x.type==='address'?answers.address&&answers.city&&answers.state&&answers.zip:x.type==='review'?false:Boolean(answers[x.k]);const first=v.findIndex(x=>!done(x));current=first<0?v.length-1:first}
     render();
   })();
   </script>
-
   <!-- TrustedForm -->
-  <script type="text/javascript">
-    (function() {
-      var tf = document.createElement('script');
-      tf.type = 'text/javascript';
-      tf.async = true;
-      tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
-        '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
-        new Date().getTime() + Math.random();
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s);
-    })();
-  </script>
-  <noscript>
-    <img src="https://api.trustedform.com/ns.gif" alt="" width="1" height="1">
-  </noscript>
-  <!-- End TrustedForm -->
+  <script>(function(){var tf=document.createElement('script');tf.type='text/javascript';tf.async=true;tf.src=(location.protocol==='https:'?'https':'http')+'://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l='+Date.now()+Math.random();var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(tf,s)})();</script>
+  <noscript><img src="https://api.trustedform.com/ns.gif" alt="" width="1" height="1"></noscript>
 </body>
 </html>
