@@ -9,15 +9,23 @@ const maritalStatuses = {
 
 const educationLevels = {
   'high school': 'High School Diploma',
+  'high school diploma': 'High School Diploma',
+  'some/no high school': 'Some High School',
+  ged: 'GED',
   'some college': 'Some College',
   'associate degree': 'Associate Degree',
   "bachelor's degree": 'Bachelors Degree',
-  'graduate degree': 'Masters Degree'
+  'bachelors degree': 'Bachelors Degree',
+  'graduate degree': 'Masters Degree',
+  'masters degree': 'Masters Degree',
+  'doctoral degree': 'Doctoral Degree',
+  'trade/vocational': 'Vocational Degree'
 };
 
 const primaryUses = {
-  'commute to work': 'Commute Work', pleasure: 'Pleasure',
-  business: 'Business', school: 'Commute School'
+  commute: 'Commute Work', 'commute to work': 'Commute Work',
+  pleasure: 'Pleasure', business: 'Business', farm: 'Farm',
+  school: 'Commute School'
 };
 
 function clean(value, max = 200) {
@@ -34,6 +42,12 @@ function minimumInsuredSince(value) {
   if (!years) return undefined;
   const date = new Date();
   date.setUTCFullYear(date.getUTCFullYear() - years);
+  return date.toISOString().slice(0, 10);
+}
+
+function dateMonthsAgo(months) {
+  const date = new Date();
+  date.setUTCMonth(date.getUTCMonth() - months);
   return date.toISOString().slice(0, 10);
 }
 
@@ -64,11 +78,12 @@ function buildVehicle(body, suffix = '') {
 
   const ownership = normalizeKey(body[`owned_or_leased${suffix}`] || body.owned_or_leased);
   const use = normalizeKey(body[`use${suffix}`] || body.use);
+  const ownershipValues = { owned: 'Own', financed: 'Finance', leased: 'Lease' };
   const vehicle = {
     year,
     make,
     model,
-    ownership: ownership === 'leased' ? 'Lease' : 'Own',
+    ownership: ownershipValues[ownership],
     primary_use: primaryUses[use] || undefined
   };
 
@@ -82,13 +97,39 @@ function buildDriver(body, includeIdentity) {
     relationship: 'Self',
     gender: gender === 'male' ? 'M' : gender === 'female' ? 'F' : undefined,
     marital_status: maritalStatuses[normalizeKey(body.marital_status)],
-    license_status: normalizeKey(body.license_status) === 'yes' ? 'Active' : undefined,
+    license_status: normalizeKey(body.license_status) === 'yes' ? 'Active' :
+      normalizeKey(body.license_status) === 'no' ? 'Not Licensed' : undefined,
     license_state: clean(body.state, 2).toUpperCase(),
     residence_type: normalizeKey(body.own_or_rent) === 'own' ? 'Own' :
       normalizeKey(body.own_or_rent) === 'rent' ? 'Rent' : 'Other',
     occupation: clean(body.occupation, 100),
-    education: educationLevels[normalizeKey(body.highest_level)]
+    education: educationLevels[normalizeKey(body.highest_level)],
+    requires_sr22: normalizeKey(body.dui) === 'yes'
   };
+
+  const ticketCount = normalizeKey(body.ticket_count) === '3+' ? 3 :
+    Number.parseInt(clean(body.ticket_count), 10) || 0;
+  if (ticketCount) {
+    driver.tickets = Array.from({ length: ticketCount }, (_, index) => ({
+      ticket_date: dateMonthsAgo(12 + index * 8),
+      description: 'Traffic Ticket'
+    }));
+  }
+  if (normalizeKey(body.at_fault_accident) === 'yes') {
+    driver.accidents = [{
+      accident_date: dateMonthsAgo(14),
+      description: 'Vehicle Hit Vehicle',
+      at_fault: true,
+      damage: 'property'
+    }];
+  }
+  if (normalizeKey(body.dui) === 'yes') {
+    driver.major_violations = [{
+      violation_date: dateMonthsAgo(18),
+      description: 'Drunk Driving',
+      state: clean(body.state, 2).toUpperCase()
+    }];
+  }
 
   if (includeIdentity) {
     driver.first_name = clean(body.first_name, 80);
