@@ -1,6 +1,5 @@
 const { randomUUID } = require('node:crypto');
-
-const DEFAULT_API_BASE = 'https://api.jangl.com/v2/auto_insurance';
+const { saveLead, routeLead } = require('../lib/lead-delivery');
 
 const COVERAGE_TYPES = new Set(['State Minimum', 'Standard', 'Preferred', 'Premium']);
 
@@ -145,38 +144,6 @@ function buildPost(body, req, authCode, ping) {
   };
 }
 
-async function janglRequest(path, payload) {
-  const token = clean(process.env.JANGL_API_TOKEN, 500);
-  if (!token) {
-    const error = new Error('JANGL_API_TOKEN is not configured');
-    error.statusCode = 500;
-    throw error;
-  }
-
-  const base = clean(process.env.JANGL_API_BASE_URL || DEFAULT_API_BASE, 500).replace(/\/$/, '');
-  const response = await fetch(`${base}/${path}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Token ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(12000)
-  });
-
-  let result;
-  try { result = await response.json(); }
-  catch { result = { status: 'denied', errors: { upstream: ['Invalid API response'] } }; }
-
-  if (!response.ok && result.status !== 'denied') {
-    const error = new Error('Quoting Fast request failed');
-    error.statusCode = 502;
-    throw error;
-  }
-  return result;
-}
-
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') {
@@ -202,35 +169,13 @@ module.exports = async function handler(req, res) {
       error.statusCode = 400;
       throw error;
     }
-    let pingPayload = buildPing(body, req);
-    let pingResult = await janglRequest('ping', pingPayload);
-    if (pingResult.status !== 'success' || !pingResult.auth_code) {
-      return res.status(422).json({
-        success: false,
-        message: 'No matching insurance options are available at this time.',
-        status: 'denied'
-      });
+    const lead = await saveLead(body, req);
+    try {
+      await routeLead(lead);
+    } catch (deliveryError) {
+      console.error('Buyer delivery error after lead save:', lead.id, deliveryError.message);
     }
-
-    let postResult = await janglRequest('post', buildPost(body, req, pingResult.auth_code, pingPayload));
-    if (postResult.status === 're-ping') {
-      pingPayload = buildPing(body, req);
-      pingResult = await janglRequest('ping', pingPayload);
-      if (pingResult.status !== 'success' || !pingResult.auth_code) {
-        return res.status(422).json({ success: false, message: 'The quote match expired. Please try again.', status: 'denied' });
-      }
-      postResult = await janglRequest('post', buildPost(body, req, pingResult.auth_code, pingPayload));
-    }
-
-    if (postResult.status !== 'success') {
-      return res.status(422).json({ success: false, message: 'Your request could not be matched at this time.', status: postResult.status || 'denied' });
-    }
-
-    return res.status(200).json({
-      success: true,
-      confirmation_id: postResult.confirmation_id,
-      price: postResult.price
-    });
+    return res.status(202).json({ success: true, lead_id: lead.id });
   } catch (error) {
     const status = Number(error.statusCode) || 500;
     if (status >= 500) console.error('Auto quote integration error:', error.message);
@@ -241,4 +186,4 @@ module.exports = async function handler(req, res) {
   }
 };
 
-module.exports._test = { buildPing, buildPost, buildData, buildDriver, buildVehicle };
+module.exports._test = { buildPing, buildPost, buildData, buildDriver, buildVehicle, requireFields };
