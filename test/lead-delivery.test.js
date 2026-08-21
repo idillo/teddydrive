@@ -32,6 +32,27 @@ test('Jangl post contains auth code and contact identity', () => {
   if (previous === undefined) delete process.env.JANGL_OFFER_ID; else process.env.JANGL_OFFER_ID = previous;
 });
 
+test('LeadPortal direct post uses its required request envelope and redacts its key', () => {
+  process.env.TEST_LEADPORTAL_TOKEN = 'private-key';
+  const buyer = { adapter: 'leadportal_ipr', environment: 'test', auth_env_var: 'TEST_LEADPORTAL_TOKEN', lead_type: 'II-AutoInsurance', source_code: 'II-AutoInsurance', terminating_phone: '800-555-8888' };
+  const value = payloadFor({ ...lead, trusted_form_cert_url: 'https://cert.trustedform.com/test' }, buyer, 'direct');
+  assert.equal(value.Request.Mode, 'full');
+  assert.equal(value.Request.Key, 'private-key');
+  assert.equal(value.Request.API_Action, 'iprSubmitLead');
+  assert.equal(value.Request.TYPE, 'II-AutoInsurance');
+  assert.equal(value.Request.SRC, 'II-AutoInsurance');
+  assert.equal(value.Request.Terminating_Phone, '8005558888');
+  assert.equal(value.Request.Test_Lead, 1);
+  assert.equal(redact(value).Request.Key, '[REDACTED]');
+  delete process.env.TEST_LEADPORTAL_TOKEN;
+});
+
+test('LeadPortal post includes lead ID returned by ping', () => {
+  const value = payloadFor(lead, { adapter: 'leadportal_ipr', lead_type: 'II-AutoInsurance', source_code: 'II-AutoInsurance', terminating_phone: '8005558888' }, 'post', '1234');
+  assert.equal(value.Request.Mode, 'post');
+  assert.equal(value.Request.Lead_ID, '1234');
+});
+
 test('redaction removes nested credentials', () => {
   assert.deepEqual(redact({ authorization: 'secret', nested: { api_token: 'secret', ok: 1 } }), { authorization: '[REDACTED]', nested: { api_token: '[REDACTED]', ok: 1 } });
 });

@@ -33,7 +33,10 @@ async function loadBuyers(){
     <input name="auth_env_var" value="${esc(b.auth_env_var)}" placeholder="Credential variable name">
     <input name="api_token" type="password" autocomplete="new-password" placeholder="New API token (blank keeps current)">
     <input name="auth_scheme" value="${esc(b.auth_scheme)}" placeholder="Auth scheme">
-    <select name="adapter"><option value="raw_json" ${b.adapter==='raw_json'?'selected':''}>Raw JSON</option><option value="jangl_auto" ${b.adapter==='jangl_auto'?'selected':''}>Jangl auto</option></select>
+    <select name="adapter"><option value="raw_json" ${b.adapter==='raw_json'?'selected':''}>Raw JSON</option><option value="jangl_auto" ${b.adapter==='jangl_auto'?'selected':''}>Jangl auto</option><option value="leadportal_ipr" ${b.adapter==='leadportal_ipr'?'selected':''}>LeadPortal IPR</option></select>
+    <input name="lead_type" value="${esc(b.lead_type)}" placeholder="LeadPortal TYPE">
+    <input name="source_code" value="${esc(b.source_code)}" placeholder="LeadPortal SRC">
+    <input name="terminating_phone" value="${esc(b.terminating_phone)}" placeholder="Terminating phone (10 digits)">
     <label>Timeout (milliseconds)<input name="timeout_ms" type="number" value="${esc(b.timeout_ms)}"></label>
     <div class="wide row"><button data-save>Save draft</button><button data-test class="secondary">Send synthetic test</button><span class="message"></span></div>
     <pre class="wide test-result hidden" aria-live="polite"></pre>
@@ -53,7 +56,7 @@ async function loadBuyers(){
     updateTestControl();
     el.querySelector('[data-save]').onclick=async()=>{
       const data={id:el.dataset.id};
-      ['name','campaign_name','campaign_id','delivery_mode','environment','priority','direct_endpoint_url','ping_endpoint_url','post_endpoint_url','auth_env_var','api_token','auth_scheme','adapter','timeout_ms'].forEach(n=>data[n]=value(n));
+      ['name','campaign_name','campaign_id','delivery_mode','environment','priority','direct_endpoint_url','ping_endpoint_url','post_endpoint_url','auth_env_var','api_token','auth_scheme','adapter','lead_type','source_code','terminating_phone','timeout_ms'].forEach(n=>data[n]=value(n));
       try { await api('buyer',{method:'PATCH',body:JSON.stringify(data)}); el.querySelector('[name="api_token"]').value=''; el.querySelector('.message').textContent='Draft saved'; }
       catch(e) { el.querySelector('.message').textContent=e.message; el.querySelector('.message').className='message error'; }
     };
