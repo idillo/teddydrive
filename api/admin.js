@@ -1,3 +1,4 @@
+const { randomUUID } = require('node:crypto');
 const db = require('../lib/supabase');
 const { deliverToBuyer, persistDelivery } = require('../lib/lead-delivery');
 const { saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
@@ -119,7 +120,14 @@ module.exports = async function handler(req, res) {
         lead = leads[0];
       } else {
         const payload = { test: true, first_name: 'Test', last_name: 'Lead', email: 'test@example.com', phone: '2025550100', address: '1 Test Street', city: 'New York', state: 'NY', zip: '10001', year: '2024', make: 'Honda', model: 'Civic', birthdate: '1990-01-01', coverage_type: 'Standard', own_or_rent: 'Rent', has_coverage: 'No', second_vehicle: 'No', consent_text: 'Synthetic admin test; not a consumer lead.', consent_timestamp: new Date().toISOString() };
-        const testRows = await db.request('leads', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ first_name: payload.first_name, last_name: payload.last_name, email: payload.email, phone: payload.phone, address: payload.address, city: payload.city, state: payload.state, zip: payload.zip, consent_text: payload.consent_text, consent_timestamp: payload.consent_timestamp, is_test: true, delivery_status: 'pending', payload }) });
+        const testRows = await db.request('leads', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({
+          first_name: payload.first_name, last_name: payload.last_name, email: payload.email, phone: payload.phone,
+          address: payload.address, city: payload.city, state: payload.state, zip: payload.zip,
+          consent_text: payload.consent_text, consent_timestamp: payload.consent_timestamp,
+          trusted_form_cert_url: `https://cert.trustedform.com/${randomUUID()}`,
+          source_url: 'https://teddydrive.com/auto-quote.html', ip_address: '192.0.2.1',
+          user_agent: 'TeddyDrive Admin Synthetic Test/1.0', is_test: true, delivery_status: 'pending', payload
+        }) });
         lead = testRows[0];
       }
       if (!lead) return res.status(404).json({ error: 'Lead not found' });
