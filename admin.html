@@ -7,7 +7,7 @@
 <header><strong>TeddyDrive Admin</strong><button id="logout" class="secondary hidden">Sign out</button></header>
 <main><section id="login" class="card" style="max-width:440px;margin:12vh auto"><h1>Admin sign in</h1><p class="muted">Use an allowlisted Supabase administrator account.</p><form id="loginForm"><p><input id="email" type="email" autocomplete="username" placeholder="Email" required style="width:100%"></p><p><input id="password" type="password" autocomplete="current-password" placeholder="Password" required style="width:100%"></p><button>Sign in</button><p id="loginError" class="error"></p></form></section>
 <div id="app" class="hidden"><section class="card"><div class="row"><h1 class="grow">Leads</h1><button id="export">Export CSV</button></div><div class="row"><input id="search" class="grow" placeholder="Search name, email, phone, or lead ID"><select id="status"><option value="">All statuses</option><option>pending</option><option>accepted</option><option>failed</option><option>no_buyers</option></select><input id="from" type="date"><input id="to" type="date"><button id="filter">Filter</button></div><p id="leadError" class="error"></p><div style="overflow:auto"><table><thead><tr><th>Created</th><th>Lead</th><th>Contact</th><th>Location</th><th>Status</th><th></th></tr></thead><tbody id="leads"></tbody></table></div></section>
-<section class="card"><div class="row"><h2 class="grow">Buyer routing</h2><input id="newBuyerName" placeholder="New buyer name"><button id="addBuyer">Add buyer</button><button id="publishRouting" class="danger">Publish routing &amp; deploy</button></div><p class="muted">Save buyer drafts first. Publishing writes the routing snapshot and credentials to Vercel, then starts a deployment. New deployments do not affect the current live version until ready.</p><p id="publishMessage"></p><div id="buyers"></div></section></div></main>
+<section class="card"><div class="row"><h2 class="grow">Buyer routing</h2><input id="newBuyerName" placeholder="New buyer name"><button id="addBuyer">Add buyer</button></div><p class="muted">Save a buyer draft, then publish that buyer only. Other unfinished buyer drafts remain unpublished.</p><div id="buyers"></div></section></div></main>
 <div id="detailModal" class="modal hidden"><section class="card"><div class="row"><h2 class="grow">Lead details</h2><button id="closeDetail" class="secondary">Close</button></div><div id="detail"></div></section></div>
 <script>
 (()=>{'use strict';let config,token=localStorage.getItem('td_admin_token')||'';const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -38,7 +38,7 @@ async function loadBuyers(){
     <label class="leadportal-only">LeadPortal SRC<input name="source_code" value="${esc(b.source_code)}"></label>
     <label class="leadportal-only">Terminating phone (10 digits)<input name="terminating_phone" value="${esc(b.terminating_phone)}"></label>
     <label>Timeout (milliseconds)<input name="timeout_ms" type="number" value="${esc(b.timeout_ms)}"></label>
-    <div class="wide row"><button data-save>Save draft</button><button data-test class="secondary">Send synthetic test</button><span class="message"></span></div>
+    <div class="wide row"><button data-save>Save draft</button><button data-test class="secondary">Send synthetic test</button><button data-publish class="danger">Publish this buyer &amp; deploy</button><span class="message"></span></div>
     <pre class="wide test-result hidden" aria-live="polite"></pre>
   </div>`).join('');
   document.querySelectorAll('.buyer').forEach(el=>{
@@ -71,6 +71,13 @@ async function loadBuyers(){
       try { await api('buyer',{method:'PATCH',body:JSON.stringify(data)}); el.querySelector('[name="api_token"]').value=''; el.querySelector('.message').textContent='Draft saved'; }
       catch(e) { el.querySelector('.message').textContent=e.message; el.querySelector('.message').className='message error'; }
     };
+    el.querySelector('[data-publish]').onclick=async()=>{
+      const summary=`Buyer: ${value('name')}\nEnvironment: ${value('environment')}\nDelivery mode: ${value('delivery_mode')}\n\nPublish ONLY this buyer's saved draft and start a deployment?`;
+      if(!confirm(summary))return;
+      message.className='message'; message.textContent='Publishing this buyer…';
+      try { await api('publish-buyer',{method:'POST',body:JSON.stringify({buyer_id:el.dataset.id})}); message.textContent='This buyer was published. Deployment started.'; }
+      catch(e) { message.className='message error'; message.textContent=e.message; }
+    };
     testButton.onclick=async()=>{
       if(!confirm('Send synthetic data to this TEST buyer?'))return;
       const output=el.querySelector('.test-result'); output.classList.remove('hidden'); output.textContent='Sending test…';
@@ -79,5 +86,5 @@ async function loadBuyers(){
     };
   });
 }
-$('loginForm').onsubmit=signIn;$('logout').onclick=signOut;$('filter').onclick=loadLeads;$('closeDetail').onclick=()=>$('detailModal').classList.add('hidden');$('addBuyer').onclick=async()=>{const name=$('newBuyerName').value.trim();if(!name)return;await api('buyer',{method:'POST',body:JSON.stringify({name})});$('newBuyerName').value='';await loadBuyers()};$('publishRouting').onclick=async()=>{if(!confirm('Publish all saved buyer routing and start a Vercel deployment?'))return;$('publishMessage').textContent='Publishing…';try{await api('publish-routing',{method:'POST',body:'{}'});$('publishMessage').textContent='Deployment started. Keep production buyers Off until the deployment is Ready.'}catch(e){$('publishMessage').className='error';$('publishMessage').textContent=e.message}};$('export').onclick=async()=>{const q=new URLSearchParams({search:$('search').value,status:$('status').value,from:$('from').value,to:$('to').value});const blob=await api('export&'+q).then(r=>r.blob()),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='teddydrive-leads.csv';a.click();URL.revokeObjectURL(a.href)};init()})();
+$('loginForm').onsubmit=signIn;$('logout').onclick=signOut;$('filter').onclick=loadLeads;$('closeDetail').onclick=()=>$('detailModal').classList.add('hidden');$('addBuyer').onclick=async()=>{const name=$('newBuyerName').value.trim();if(!name)return;await api('buyer',{method:'POST',body:JSON.stringify({name})});$('newBuyerName').value='';await loadBuyers()};$('export').onclick=async()=>{const q=new URLSearchParams({search:$('search').value,status:$('status').value,from:$('from').value,to:$('to').value});const blob=await api('export&'+q).then(r=>r.blob()),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='teddydrive-leads.csv';a.click();URL.revokeObjectURL(a.href)};init()})();
 </script></body></html>

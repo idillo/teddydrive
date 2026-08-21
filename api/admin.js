@@ -1,7 +1,7 @@
 const { randomUUID } = require('node:crypto');
 const db = require('../lib/supabase');
 const { deliverToBuyer, persistDelivery } = require('../lib/lead-delivery');
-const { saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
+const { routingBuyer, saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
 
 function bearer(req) {
   const value = String(req.headers.authorization || '');
@@ -100,10 +100,19 @@ module.exports = async function handler(req, res) {
       await audit(user, 'create_buyer', 'buyer', rows[0].id);
       return res.status(201).json(rows[0]);
     }
-    if (req.method === 'POST' && action === 'publish-routing') {
-      const buyers = await db.request('buyers?select=*&order=priority.asc');
-      const deployment = await publishRouting(buyers);
-      await audit(user, 'publish_buyer_routing', 'buyer', '', { buyer_count: buyers.length, deployment_job: deployment.job?.id || deployment.id || null });
+    if (req.method === 'POST' && action === 'publish-buyer') {
+      const buyerId = text((req.body || {}).buyer_id, 36);
+      const buyers = await db.request(`buyers?id=eq.${encodeURIComponent(buyerId)}&select=*`);
+      if (!buyers[0]) return res.status(404).json({ error: 'Buyer not found' });
+      const selected = routingBuyer(buyers[0]);
+      const publishedRows = await db.request('buyers?published_config=not.is.null&select=id,published_config');
+      const routing = publishedRows.filter(row => row.id !== buyerId).map(row => row.published_config);
+      if (selected.delivery_mode !== 'off') routing.push(selected);
+      routing.sort((a, b) => (a.priority || 100) - (b.priority || 100));
+      const deployment = await publishRouting(routing);
+      const publishedAt = new Date().toISOString();
+      await db.request(`buyers?id=eq.${encodeURIComponent(buyerId)}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ published_config: selected.delivery_mode === 'off' ? null : selected, published_at: publishedAt }) });
+      await audit(user, 'publish_buyer_routing', 'buyer', buyerId, { buyer_name: selected.name, delivery_mode: selected.delivery_mode, environment: selected.environment, deployment_job: deployment.job?.id || deployment.id || null });
       return res.status(202).json({ success: true, deployment });
     }
     if (req.method === 'POST' && (action === 'retry' || action === 'test')) {
