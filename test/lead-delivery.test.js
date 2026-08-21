@@ -82,3 +82,14 @@ test('lead insert and buyer routing start concurrently', async () => {
   releaseInsert();
   await running;
 });
+
+test('routing exceptions are stored as failures instead of no buyers', async () => {
+  let storedError;
+  await processLead({ id: 'lead-2' }, {
+    insertLead: async () => {},
+    routeLead: async () => { throw new Error('BUYER_ROUTING_CONFIG is invalid JSON'); },
+    persistRoutingFailure: async (_lead, error) => { storedError = error.message; },
+    persistDelivery: async () => { throw new Error('should not mark no_buyers'); }
+  });
+  assert.equal(storedError, 'BUYER_ROUTING_CONFIG is invalid JSON');
+});

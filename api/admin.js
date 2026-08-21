@@ -1,6 +1,6 @@
 const { randomUUID } = require('node:crypto');
 const db = require('../lib/supabase');
-const { deliverToBuyer, persistDelivery } = require('../lib/lead-delivery');
+const { deliverToBuyer, persistDelivery, runtimeBuyers } = require('../lib/lead-delivery');
 const { routingBuyer, saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
 
 function bearer(req) {
@@ -37,12 +37,20 @@ module.exports = async function handler(req, res) {
       const to = text(queryValue(req.query.to), 30);
       const page = Math.max(0, Number(queryValue(req.query.page)) || 0);
       const limit = Math.min(200, Math.max(1, Number(queryValue(req.query.limit)) || 50));
-      const filters = ['select=id,first_name,last_name,email,phone,state,zip,delivery_status,created_at,processed_at', 'order=created_at.desc', `offset=${page * limit}`, `limit=${limit}`];
+      const filters = ['select=id,first_name,last_name,email,phone,state,zip,delivery_status,routing_error,created_at,processed_at', 'order=created_at.desc', `offset=${page * limit}`, `limit=${limit}`];
       if (status) filters.push(`delivery_status=eq.${encodeURIComponent(status)}`);
       if (from) filters.push(`created_at=gte.${encodeURIComponent(from)}`);
       if (to) filters.push(`created_at=lte.${encodeURIComponent(to)}`);
       if (search) filters.push(`or=${encodeURIComponent(`(first_name.ilike.*${search}*,last_name.ilike.*${search}*,email.ilike.*${search}*,phone.ilike.*${search}*,id.eq.${/^[0-9a-f-]{36}$/i.test(search) ? search : '00000000-0000-0000-0000-000000000000'})`)}`);
       return res.status(200).json(await db.request(`leads?${filters.join('&')}`));
+    }
+    if (req.method === 'GET' && action === 'routing-status') {
+      try {
+        const buyers = runtimeBuyers();
+        return res.status(200).json({ buyers: buyers.map(({ id, name, environment, delivery_mode, adapter }) => ({ id, name, environment, delivery_mode, adapter })), error: null });
+      } catch (error) {
+        return res.status(200).json({ buyers: [], error: text(error.message, 1000) });
+      }
     }
     if (req.method === 'GET' && action === 'lead') {
       const id = text(queryValue(req.query.id), 36);
