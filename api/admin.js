@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
       const id = text(queryValue(req.query.id), 36);
       const leads = await db.request(`leads?id=eq.${encodeURIComponent(id)}&select=*`);
       if (!leads[0]) return res.status(404).json({ error: 'Lead not found' });
-      const attempts = await db.request(`buyer_attempts?lead_id=eq.${encodeURIComponent(id)}&select=*,buyers(name)&order=created_at.asc`);
+      const attempts = await db.request(`buyer_attempts?lead_id=eq.${encodeURIComponent(id)}&select=*,buyers(name,campaign_name,campaign_id)&order=created_at.asc`);
       return res.status(200).json({ lead: leads[0], attempts });
     }
     if (req.method === 'GET' && action === 'buyers') return res.status(200).json(await db.request('buyers?select=*&order=priority.asc'));
@@ -75,7 +75,8 @@ module.exports = async function handler(req, res) {
       const allowedModes = new Set(['off','direct_post','ping_post']);
       if (!id || !allowedModes.has(body.delivery_mode)) return res.status(400).json({ error: 'Invalid buyer or delivery mode' });
       const update = {
-        name: text(body.name, 120), delivery_mode: body.delivery_mode,
+        name: text(body.name, 120), campaign_name: text(body.campaign_name, 200) || null,
+        campaign_id: text(body.campaign_id, 100) || null, delivery_mode: body.delivery_mode,
         environment: body.environment === 'production' ? 'production' : 'test', priority: Number(body.priority) || 100,
         adapter: body.adapter === 'jangl_auto' ? 'jangl_auto' : 'raw_json',
         direct_endpoint_url: text(body.direct_endpoint_url, 1000) || null,
@@ -126,6 +127,6 @@ module.exports = async function handler(req, res) {
     return res.status(404).json({ error: 'Unknown admin action' });
   } catch (error) {
     console.error('Admin API error:', error.message);
-    return res.status(500).json({ error: 'Admin operation failed' });
+    return res.status(500).json({ error: `Admin operation failed: ${text(error.message, 500)}` });
   }
 };
