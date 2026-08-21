@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { payloadFor, redact } = require('../lib/lead-delivery');
+const { payloadFor, redact, runtimeBuyers, processLead } = require('../lib/lead-delivery');
 
 const lead = {
   id: '11111111-1111-4111-8111-111111111111', first_name: 'Ada', last_name: 'Lovelace',
@@ -23,11 +23,44 @@ test('Jangl ping excludes identity and exposes last four only', () => {
 });
 
 test('Jangl post contains auth code and contact identity', () => {
+  const previous = process.env.JANGL_OFFER_ID;
+  process.env.JANGL_OFFER_ID = 'offer-42';
   const value = payloadFor(lead, { adapter: 'jangl_auto' }, 'post', 'abc123');
   assert.equal(value.auth_code, 'abc123');
   assert.equal(value.contact.first_name, 'Ada');
+  assert.equal(value.meta.offer_id, 'offer-42');
+  if (previous === undefined) delete process.env.JANGL_OFFER_ID; else process.env.JANGL_OFFER_ID = previous;
 });
 
 test('redaction removes nested credentials', () => {
   assert.deepEqual(redact({ authorization: 'secret', nested: { api_token: 'secret', ok: 1 } }), { authorization: '[REDACTED]', nested: { api_token: '[REDACTED]', ok: 1 } });
+});
+
+test('runtime routing loads enabled buyers from environment without a database query', () => {
+  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+  const previousEnvironment = process.env.BUYER_ENVIRONMENT;
+  process.env.BUYER_ENVIRONMENT = 'test';
+  process.env.BUYER_ROUTING_CONFIG = JSON.stringify([
+    { id: '1', name: 'Off', delivery_mode: 'off', environment: 'test', priority: 1 },
+    { id: '2', name: 'Production', delivery_mode: 'direct_post', environment: 'production', priority: 2 },
+    { id: '3', name: 'Test', delivery_mode: 'ping_post', environment: 'test', priority: 3 }
+  ]);
+  assert.deepEqual(runtimeBuyers().map(buyer => buyer.id), ['3']);
+  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  if (previousEnvironment === undefined) delete process.env.BUYER_ENVIRONMENT; else process.env.BUYER_ENVIRONMENT = previousEnvironment;
+});
+
+test('lead insert and buyer routing start concurrently', async () => {
+  let releaseInsert;
+  let routeStarted = false;
+  const insertGate = new Promise(resolve => { releaseInsert = resolve; });
+  const running = processLead({ id: 'lead-1' }, {
+    insertLead: async () => { await insertGate; },
+    routeLead: async () => { routeStarted = true; return []; },
+    persistDelivery: async () => {}
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(routeStarted, true);
+  releaseInsert();
+  await running;
 });

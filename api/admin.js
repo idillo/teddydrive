@@ -1,5 +1,6 @@
 const db = require('../lib/supabase');
-const { deliverToBuyer } = require('../lib/lead-delivery');
+const { deliverToBuyer, persistDelivery } = require('../lib/lead-delivery');
+const { saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
 
 function bearer(req) {
   const value = String(req.headers.authorization || '');
@@ -29,7 +30,7 @@ module.exports = async function handler(req, res) {
 
   try {
     if (req.method === 'GET' && action === 'leads') {
-      const search = text(queryValue(req.query.search), 100);
+      const search = text(queryValue(req.query.search), 100).replace(/[(),*]/g, ' ').trim();
       const status = text(queryValue(req.query.status), 30);
       const from = text(queryValue(req.query.from), 30);
       const to = text(queryValue(req.query.to), 30);
@@ -51,6 +52,7 @@ module.exports = async function handler(req, res) {
     }
     if (req.method === 'GET' && action === 'buyers') return res.status(200).json(await db.request('buyers?select=*&order=priority.asc'));
     if (req.method === 'GET' && action === 'export') {
+      const search = text(queryValue(req.query.search), 100).replace(/[(),*]/g, ' ').trim();
       const status = text(queryValue(req.query.status), 30);
       const from = text(queryValue(req.query.from), 30);
       const to = text(queryValue(req.query.to), 30);
@@ -58,6 +60,7 @@ module.exports = async function handler(req, res) {
       if (status) filters.push(`delivery_status=eq.${encodeURIComponent(status)}`);
       if (from) filters.push(`created_at=gte.${encodeURIComponent(from)}`);
       if (to) filters.push(`created_at=lte.${encodeURIComponent(to)}`);
+      if (search) filters.push(`or=${encodeURIComponent(`(first_name.ilike.*${search}*,last_name.ilike.*${search}*,email.ilike.*${search}*,phone.ilike.*${search}*,id.eq.${/^[0-9a-f-]{36}$/i.test(search) ? search : '00000000-0000-0000-0000-000000000000'})`)}`);
       const rows = await db.request(`leads?${filters.join('&')}`);
       const headers = ['id','created_at','first_name','last_name','email','phone','state','zip','delivery_status'];
       const csv = [headers.join(','), ...rows.map(row => headers.map(key => csvCell(row[key])).join(','))].join('\n');
@@ -81,6 +84,8 @@ module.exports = async function handler(req, res) {
         auth_env_var: text(body.auth_env_var, 100) || null, auth_scheme: text(body.auth_scheme, 30) || null,
         timeout_ms: Math.min(30000, Math.max(1000, Number(body.timeout_ms) || 12000)), updated_at: new Date().toISOString()
       };
+      const apiToken = text(body.api_token, 4000);
+      if (apiToken) update.auth_env_var = await saveBuyerToken(id, apiToken);
       await db.request(`buyers?id=eq.${encodeURIComponent(id)}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(update) });
       await audit(user, 'update_buyer', 'buyer', id, { delivery_mode: update.delivery_mode, environment: update.environment });
       return res.status(200).json({ success: true });
@@ -91,6 +96,12 @@ module.exports = async function handler(req, res) {
       await audit(user, 'create_buyer', 'buyer', rows[0].id);
       return res.status(201).json(rows[0]);
     }
+    if (req.method === 'POST' && action === 'publish-routing') {
+      const buyers = await db.request('buyers?select=*&order=priority.asc');
+      const deployment = await publishRouting(buyers);
+      await audit(user, 'publish_buyer_routing', 'buyer', '', { buyer_count: buyers.length, deployment_job: deployment.job?.id || deployment.id || null });
+      return res.status(202).json({ success: true, deployment });
+    }
     if (req.method === 'POST' && (action === 'retry' || action === 'test')) {
       const body = req.body || {};
       const buyers = await db.request(`buyers?id=eq.${encodeURIComponent(text(body.buyer_id, 36))}&select=*`);
@@ -100,13 +111,15 @@ module.exports = async function handler(req, res) {
         const leads = await db.request(`leads?id=eq.${encodeURIComponent(text(body.lead_id, 36))}&select=*`);
         lead = leads[0];
       } else {
-        const testRows = await db.request('leads', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ first_name: 'Test', last_name: 'Lead', email: 'test@example.com', phone: '2025550100', state: 'NY', zip: '10001', is_test: true, delivery_status: 'pending', payload: { test: true, first_name: 'Test', last_name: 'Lead', email: 'test@example.com', phone: '2025550100', state: 'NY', zip: '10001' } }) });
+        const payload = { test: true, first_name: 'Test', last_name: 'Lead', email: 'test@example.com', phone: '2025550100', address: '1 Test Street', city: 'New York', state: 'NY', zip: '10001', year: '2024', make: 'Honda', model: 'Civic', birthdate: '1990-01-01', coverage_type: 'Standard', own_or_rent: 'Rent', has_coverage: 'No', second_vehicle: 'No', consent_text: 'Synthetic admin test; not a consumer lead.', consent_timestamp: new Date().toISOString() };
+        const testRows = await db.request('leads', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ first_name: payload.first_name, last_name: payload.last_name, email: payload.email, phone: payload.phone, address: payload.address, city: payload.city, state: payload.state, zip: payload.zip, consent_text: payload.consent_text, consent_timestamp: payload.consent_timestamp, is_test: true, delivery_status: 'pending', payload }) });
         lead = testRows[0];
       }
       if (!lead) return res.status(404).json({ error: 'Lead not found' });
       if (buyers[0].environment !== 'test' && action === 'test') return res.status(400).json({ error: 'Test controls only call test buyers' });
       const count = action === 'retry' ? await db.request(`buyer_attempts?lead_id=eq.${lead.id}&buyer_id=eq.${buyers[0].id}&select=id`) : [];
       const result = await deliverToBuyer(lead, buyers[0], count.length + 1);
+      await persistDelivery(lead, [{ buyer: buyers[0], result }]);
       await audit(user, action === 'retry' ? 'retry_buyer' : 'test_buyer', 'buyer', buyers[0].id, { lead_id: lead.id, result: result.status });
       return res.status(200).json(result);
     }
