@@ -18,7 +18,7 @@ AUTO QUOTE API
 - Required server variables: SUPABASE_URL and SUPABASE_SECRET_KEY
 - Required auth variables: SUPABASE_PUBLISHABLE_KEY and ADMIN_EMAILS (comma-separated allowlist)
 - Required scheduled-job variable: CRON_SECRET
-- BUYER_ENVIRONMENT must be test or production; code defaults safely to test
+- Each buyer's Test/Production environment is controlled in Admin and published with its routing configuration
 - Runtime buyer routing comes from BUYER_ROUTING_CONFIG; submission never queries buyer configuration from the database
 - Jangl variables: JANGL_API_BASE_URL, JANGL_API_TOKEN, JANGL_SOURCE_ID, JANGL_OFFER_ID
 - Admin publishing variables: VERCEL_API_TOKEN, VERCEL_PROJECT_ID, optional VERCEL_TEAM_ID, and VERCEL_DEPLOY_HOOK_URL
@@ -35,7 +35,7 @@ ADMIN
 MANUAL SETUP ORDER (NOT PERFORMED BY CODEX)
 1. Review and apply the SQL migration to the intended Supabase project.
 2. Create Supabase Auth users and set ADMIN_EMAILS.
-3. Set CRON_SECRET and BUYER_ENVIRONMENT=test.
+3. Set CRON_SECRET. Keep new buyers Off until their test configuration is saved and verified.
 4. Create a Vercel access token and deploy hook, then set the Admin publishing variables once.
 5. In /admin.html, create buyers while Off, enter TEST endpoint configuration and credentials, then save drafts.
 6. Publish routing, wait for the deployment to become Ready, and run Send synthetic test.

@@ -57,18 +57,15 @@ test('redaction removes nested credentials', () => {
   assert.deepEqual(redact({ authorization: 'secret', nested: { api_token: 'secret', ok: 1 } }), { authorization: '[REDACTED]', nested: { api_token: '[REDACTED]', ok: 1 } });
 });
 
-test('runtime routing loads enabled buyers from environment without a database query', () => {
+test('runtime routing loads every buyer enabled in Admin without a database query', () => {
   const previousConfig = process.env.BUYER_ROUTING_CONFIG;
-  const previousEnvironment = process.env.BUYER_ENVIRONMENT;
-  process.env.BUYER_ENVIRONMENT = 'test';
   process.env.BUYER_ROUTING_CONFIG = JSON.stringify([
     { id: '1', name: 'Off', delivery_mode: 'off', environment: 'test', priority: 1 },
     { id: '2', name: 'Production', delivery_mode: 'direct_post', environment: 'production', priority: 2 },
     { id: '3', name: 'Test', delivery_mode: 'ping_post', environment: 'test', priority: 3 }
   ]);
-  assert.deepEqual(runtimeBuyers().map(buyer => buyer.id), ['3']);
+  assert.deepEqual(runtimeBuyers().map(buyer => buyer.id), ['2', '3']);
   if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
-  if (previousEnvironment === undefined) delete process.env.BUYER_ENVIRONMENT; else process.env.BUYER_ENVIRONMENT = previousEnvironment;
 });
 
 test('lead insert and buyer routing start concurrently', async () => {
