@@ -107,6 +107,12 @@ module.exports = async function handler(req, res) {
       const body = req.body || {};
       const buyers = await db.request(`buyers?id=eq.${encodeURIComponent(text(body.buyer_id, 36))}&select=*`);
       if (!buyers[0]) return res.status(404).json({ error: 'Buyer not found' });
+      if (action === 'test' && buyers[0].delivery_mode === 'off') {
+        return res.status(400).json({ error: 'Select Direct Post or Ping/Post and save first.' });
+      }
+      if (action === 'test' && buyers[0].environment !== 'test') {
+        return res.status(400).json({ error: 'Test controls only call test buyers' });
+      }
       let lead;
       if (action === 'retry') {
         const leads = await db.request(`leads?id=eq.${encodeURIComponent(text(body.lead_id, 36))}&select=*`);
@@ -117,7 +123,6 @@ module.exports = async function handler(req, res) {
         lead = testRows[0];
       }
       if (!lead) return res.status(404).json({ error: 'Lead not found' });
-      if (buyers[0].environment !== 'test' && action === 'test') return res.status(400).json({ error: 'Test controls only call test buyers' });
       const count = action === 'retry' ? await db.request(`buyer_attempts?lead_id=eq.${lead.id}&buyer_id=eq.${buyers[0].id}&select=id`) : [];
       const result = await deliverToBuyer(lead, buyers[0], count.length + 1);
       await persistDelivery(lead, [{ buyer: buyers[0], result }]);

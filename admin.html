@@ -35,18 +35,29 @@ async function loadBuyers(){
     <input name="auth_scheme" value="${esc(b.auth_scheme)}" placeholder="Auth scheme">
     <select name="adapter"><option value="raw_json" ${b.adapter==='raw_json'?'selected':''}>Raw JSON</option><option value="jangl_auto" ${b.adapter==='jangl_auto'?'selected':''}>Jangl auto</option></select>
     <label>Timeout (milliseconds)<input name="timeout_ms" type="number" value="${esc(b.timeout_ms)}"></label>
-    <div class="wide row"><button data-save>Save draft</button><button data-test class="secondary" ${b.environment!=='test'?'disabled':''}>Send synthetic test</button><span class="message"></span></div>
+    <div class="wide row"><button data-save>Save draft</button><button data-test class="secondary">Send synthetic test</button><span class="message"></span></div>
     <pre class="wide test-result hidden" aria-live="polite"></pre>
   </div>`).join('');
   document.querySelectorAll('.buyer').forEach(el=>{
     const value=n=>el.querySelector(`[name="${n}"]`).value;
+    const testButton=el.querySelector('[data-test]'), message=el.querySelector('.message');
+    const updateTestControl=()=>{
+      const isOff=value('delivery_mode')==='off', isTest=value('environment')==='test';
+      testButton.disabled=isOff||!isTest;
+      testButton.title=isOff?'Select Direct Post or Ping/Post and save first.':(!isTest?'Synthetic tests require the Test environment.':'');
+      if(isOff) message.textContent='Select Direct Post or Ping/Post and save first.';
+      else if(message.textContent==='Select Direct Post or Ping/Post and save first.') message.textContent='';
+    };
+    el.querySelector('[name="delivery_mode"]').onchange=updateTestControl;
+    el.querySelector('[name="environment"]').onchange=updateTestControl;
+    updateTestControl();
     el.querySelector('[data-save]').onclick=async()=>{
       const data={id:el.dataset.id};
       ['name','campaign_name','campaign_id','delivery_mode','environment','priority','direct_endpoint_url','ping_endpoint_url','post_endpoint_url','auth_env_var','api_token','auth_scheme','adapter','timeout_ms'].forEach(n=>data[n]=value(n));
       try { await api('buyer',{method:'PATCH',body:JSON.stringify(data)}); el.querySelector('[name="api_token"]').value=''; el.querySelector('.message').textContent='Draft saved'; }
       catch(e) { el.querySelector('.message').textContent=e.message; el.querySelector('.message').className='message error'; }
     };
-    el.querySelector('[data-test]').onclick=async()=>{
+    testButton.onclick=async()=>{
       if(!confirm('Send synthetic data to this TEST buyer?'))return;
       const output=el.querySelector('.test-result'); output.classList.remove('hidden'); output.textContent='Sending test…';
       try { const result=await api('test',{method:'POST',body:JSON.stringify({buyer_id:el.dataset.id})}).then(r=>r.json()); output.textContent=JSON.stringify(result,null,2); }
