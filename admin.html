@@ -44,7 +44,7 @@ async function loadBuyers(){
   </div>`).join('');
   document.querySelectorAll('.buyer').forEach(el=>{
     const value=n=>el.querySelector(`[name="${n}"]`).value;
-    const testButton=el.querySelector('[data-test]'), message=el.querySelector('.message');
+    const testButton=el.querySelector('[data-test]'), publishButton=el.querySelector('[data-publish]'), message=el.querySelector('.message');
     const syncAdapterFields=()=>{
       const adapter=value('adapter');
       el.querySelectorAll('.leadportal-only').forEach(field=>field.classList.toggle('hidden',adapter!=='leadportal_ipr'));
@@ -72,12 +72,12 @@ async function loadBuyers(){
       try { await api('buyer',{method:'PATCH',body:JSON.stringify(data)}); el.querySelector('[name="api_token"]').value=''; el.querySelector('.message').textContent='Draft saved'; }
       catch(e) { el.querySelector('.message').textContent=e.message; el.querySelector('.message').className='message error'; }
     };
-    el.querySelector('[data-publish]').onclick=async()=>{
-      const summary=`Buyer: ${value('name')}\nEnvironment: ${value('environment')}\nDelivery mode: ${value('delivery_mode')}\n\nPublish ONLY this buyer's saved draft and start a deployment?`;
-      if(!confirm(summary))return;
+    publishButton.onclick=async()=>{
+      publishButton.disabled=true;
       message.className='message'; message.textContent='Publishing this buyer…';
       try { await api('publish-buyer',{method:'POST',body:JSON.stringify({buyer_id:el.dataset.id})}); message.textContent='This buyer was published. Deployment started. Refresh after Vercel is Ready to verify Runtime routing.'; }
       catch(e) { message.className='message error'; message.textContent=e.message; }
+      finally { publishButton.disabled=false; }
     };
     testButton.onclick=async()=>{
       if(!confirm('Send synthetic data to this TEST buyer?'))return;
