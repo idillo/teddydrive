@@ -1,6 +1,6 @@
 const { randomUUID } = require('node:crypto');
 const db = require('../lib/supabase');
-const { deliverToBuyer, persistDelivery, runtimeBuyers } = require('../lib/lead-delivery');
+const { deliverToBuyer, persistDelivery, resolveBuyers } = require('../lib/lead-delivery');
 const { routingBuyer, saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
 
 function bearer(req) {
@@ -46,8 +46,8 @@ module.exports = async function handler(req, res) {
     }
     if (req.method === 'GET' && action === 'routing-status') {
       try {
-        const buyers = runtimeBuyers();
-        return res.status(200).json({ buyers: buyers.map(({ id, name, environment, delivery_mode, adapter }) => ({ id, name, environment, delivery_mode, adapter })), error: null });
+        const resolved = await resolveBuyers();
+        return res.status(200).json({ buyers: resolved.buyers.map(({ id, name, environment, delivery_mode, adapter }) => ({ id, name, environment, delivery_mode, adapter })), source: resolved.source, environmentError: resolved.environmentError, error: null });
       } catch (error) {
         return res.status(200).json({ buyers: [], error: text(error.message, 1000) });
       }

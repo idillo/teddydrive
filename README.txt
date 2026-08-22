@@ -19,7 +19,7 @@ AUTO QUOTE API
 - Required auth variables: SUPABASE_PUBLISHABLE_KEY and ADMIN_EMAILS (comma-separated allowlist)
 - Required scheduled-job variable: CRON_SECRET
 - Each buyer's Test/Production environment is controlled in Admin and published with its routing configuration
-- Runtime buyer routing comes from BUYER_ROUTING_CONFIG; submission never queries buyer configuration from the database
+- Runtime buyer routing uses verifiable BUYER_ROUTING_CONFIG_V2 as the zero-database-read fast path (with legacy BUYER_ROUTING_CONFIG compatibility); if that deployment snapshot is empty or invalid, published Supabase routing is used as a recovery path
 - Jangl variables: JANGL_API_BASE_URL, JANGL_API_TOKEN, JANGL_SOURCE_ID, JANGL_OFFER_ID
 - Admin publishing variables: VERCEL_API_TOKEN, VERCEL_PROJECT_ID, optional VERCEL_TEAM_ID, and VERCEL_DEPLOY_HOOK_URL
 

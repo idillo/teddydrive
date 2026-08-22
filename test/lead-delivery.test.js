@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { payloadFor, redact, runtimeBuyers, processLead } = require('../lib/lead-delivery');
+const { payloadFor, redact, runtimeBuyers, resolveBuyers, processLead } = require('../lib/lead-delivery');
 
 const lead = {
   id: '11111111-1111-4111-8111-111111111111', first_name: 'Ada', last_name: 'Lovelace',
@@ -32,6 +32,18 @@ test('Jangl post contains auth code and contact identity', () => {
   if (previous === undefined) delete process.env.JANGL_OFFER_ID; else process.env.JANGL_OFFER_ID = previous;
 });
 
+test('Jangl buyer campaign fields override legacy global campaign variables', () => {
+  const previousSource = process.env.JANGL_SOURCE_ID;
+  const previousOffer = process.env.JANGL_OFFER_ID;
+  process.env.JANGL_SOURCE_ID = 'legacy-source';
+  process.env.JANGL_OFFER_ID = 'legacy-offer';
+  const value = payloadFor(lead, { adapter: 'jangl_auto', campaign_id: '1016830', campaign_name: 'Idillo Auto Insurance - AUTOWISERATE' }, 'direct');
+  assert.equal(value.meta.source_id, '1016830');
+  assert.equal(value.meta.offer_id, 'Idillo Auto Insurance - AUTOWISERATE');
+  if (previousSource === undefined) delete process.env.JANGL_SOURCE_ID; else process.env.JANGL_SOURCE_ID = previousSource;
+  if (previousOffer === undefined) delete process.env.JANGL_OFFER_ID; else process.env.JANGL_OFFER_ID = previousOffer;
+});
+
 test('LeadPortal direct post uses its required request envelope and redacts its key', () => {
   process.env.TEST_LEADPORTAL_TOKEN = 'private-key';
   const buyer = { adapter: 'leadportal_ipr', environment: 'test', auth_env_var: 'TEST_LEADPORTAL_TOKEN', lead_type: 'II-AutoInsurance', source_code: 'II-AutoInsurance', terminating_phone: '800-555-8888' };
@@ -59,6 +71,8 @@ test('redaction removes nested credentials', () => {
 
 test('runtime routing loads every buyer enabled in Admin without a database query', () => {
   const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+  const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
+  delete process.env.BUYER_ROUTING_CONFIG_V2;
   process.env.BUYER_ROUTING_CONFIG = JSON.stringify([
     { id: '1', name: 'Off', delivery_mode: 'off', environment: 'test', priority: 1 },
     { id: '2', name: 'Production', delivery_mode: 'direct_post', environment: 'production', priority: 2 },
@@ -66,6 +80,36 @@ test('runtime routing loads every buyer enabled in Admin without a database quer
   ]);
   assert.deepEqual(runtimeBuyers().map(buyer => buyer.id), ['2', '3']);
   if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
+});
+
+test('published Supabase routing recovers when the Vercel routing snapshot is empty', async () => {
+  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+  const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
+  delete process.env.BUYER_ROUTING_CONFIG_V2;
+  process.env.BUYER_ROUTING_CONFIG = '[]';
+  let databaseReads = 0;
+  const resolved = await resolveBuyers(async () => {
+    databaseReads++;
+    return [{ published_config: { id: '2', name: 'QuotingFast', delivery_mode: 'direct_post', environment: 'production', priority: 100 } }];
+  });
+  assert.equal(databaseReads, 1);
+  assert.equal(resolved.source, 'supabase_recovery');
+  assert.deepEqual(resolved.buyers.map(buyer => buyer.id), ['2']);
+  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
+});
+
+test('valid Vercel routing remains the zero-database-read fast path', async () => {
+  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+  const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
+  process.env.BUYER_ROUTING_CONFIG = JSON.stringify([{ id: '2', name: 'QuotingFast', delivery_mode: 'direct_post', environment: 'production' }]);
+  process.env.BUYER_ROUTING_CONFIG_V2 = JSON.stringify([{ id: '3', name: 'Current QuotingFast', delivery_mode: 'direct_post', environment: 'production' }]);
+  const resolved = await resolveBuyers(async () => { throw new Error('database must not be queried'); });
+  assert.equal(resolved.source, 'vercel_environment');
+  assert.equal(resolved.buyers[0].id, '3');
+  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
 });
 
 test('lead insert and buyer routing start concurrently', async () => {
