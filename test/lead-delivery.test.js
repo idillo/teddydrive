@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { payloadFor, redact, runtimeBuyers, resolveBuyers, processLead } = require('../lib/lead-delivery');
+const { payloadFor, redact, runtimeBuyers, processLead } = require('../lib/lead-delivery');
 
 const lead = {
   id: '11111111-1111-4111-8111-111111111111', first_name: 'Ada', last_name: 'Lovelace',
@@ -70,45 +70,27 @@ test('redaction removes nested credentials', () => {
 });
 
 test('runtime routing loads every buyer enabled in Admin without a database query', () => {
-  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
   const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
-  delete process.env.BUYER_ROUTING_CONFIG_V2;
-  process.env.BUYER_ROUTING_CONFIG = JSON.stringify([
+  process.env.BUYER_ROUTING_CONFIG_V2 = JSON.stringify([
     { id: '1', name: 'Off', delivery_mode: 'off', environment: 'test', priority: 1 },
     { id: '2', name: 'Production', delivery_mode: 'direct_post', environment: 'production', priority: 2 },
     { id: '3', name: 'Test', delivery_mode: 'ping_post', environment: 'test', priority: 3 }
   ]);
   assert.deepEqual(runtimeBuyers().map(buyer => buyer.id), ['2', '3']);
-  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
   if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
 });
 
-test('published Supabase routing recovers when the Vercel routing snapshot is empty', async () => {
-  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+test('runtime routing rejects a missing deployment snapshot', () => {
   const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
   delete process.env.BUYER_ROUTING_CONFIG_V2;
-  process.env.BUYER_ROUTING_CONFIG = '[]';
-  let databaseReads = 0;
-  const resolved = await resolveBuyers(async () => {
-    databaseReads++;
-    return [{ published_config: { id: '2', name: 'QuotingFast', delivery_mode: 'direct_post', environment: 'production', priority: 100 } }];
-  });
-  assert.equal(databaseReads, 1);
-  assert.equal(resolved.source, 'supabase_recovery');
-  assert.deepEqual(resolved.buyers.map(buyer => buyer.id), ['2']);
-  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  assert.throws(() => runtimeBuyers(), /BUYER_ROUTING_CONFIG_V2 is not configured/);
   if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
 });
 
-test('valid Vercel routing remains the zero-database-read fast path', async () => {
-  const previousConfig = process.env.BUYER_ROUTING_CONFIG;
+test('runtime routing rejects a snapshot with no active buyer', () => {
   const previousConfigV2 = process.env.BUYER_ROUTING_CONFIG_V2;
-  process.env.BUYER_ROUTING_CONFIG = JSON.stringify([{ id: '2', name: 'QuotingFast', delivery_mode: 'direct_post', environment: 'production' }]);
-  process.env.BUYER_ROUTING_CONFIG_V2 = JSON.stringify([{ id: '3', name: 'Current QuotingFast', delivery_mode: 'direct_post', environment: 'production' }]);
-  const resolved = await resolveBuyers(async () => { throw new Error('database must not be queried'); });
-  assert.equal(resolved.source, 'vercel_environment');
-  assert.equal(resolved.buyers[0].id, '3');
-  if (previousConfig === undefined) delete process.env.BUYER_ROUTING_CONFIG; else process.env.BUYER_ROUTING_CONFIG = previousConfig;
+  process.env.BUYER_ROUTING_CONFIG_V2 = JSON.stringify([{ id: '3', delivery_mode: 'off' }]);
+  assert.throws(() => runtimeBuyers(), /contains no active buyers/);
   if (previousConfigV2 === undefined) delete process.env.BUYER_ROUTING_CONFIG_V2; else process.env.BUYER_ROUTING_CONFIG_V2 = previousConfigV2;
 });
 
@@ -131,9 +113,9 @@ test('routing exceptions are stored as failures instead of no buyers', async () 
   let storedError;
   await processLead({ id: 'lead-2' }, {
     insertLead: async () => {},
-    routeLead: async () => { throw new Error('BUYER_ROUTING_CONFIG is invalid JSON'); },
+    routeLead: async () => { throw new Error('BUYER_ROUTING_CONFIG_V2 is invalid JSON'); },
     persistRoutingFailure: async (_lead, error) => { storedError = error.message; },
     persistDelivery: async () => { throw new Error('should not mark no_buyers'); }
   });
-  assert.equal(storedError, 'BUYER_ROUTING_CONFIG is invalid JSON');
+  assert.equal(storedError, 'BUYER_ROUTING_CONFIG_V2 is invalid JSON');
 });
