@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { tokenKey, routingBuyer, publishRouting } = require('../lib/vercel-admin');
+const { tokenKey, routingBuyer, buyerTokenStatus, publishRouting } = require('../lib/vercel-admin');
 
 test('buyer token environment keys are deterministic and safe', () => {
   assert.equal(tokenKey('6ca7c122-aac8-4a78-a3fe-1dcb43a1730f'), 'BUYER_6CA7C122AAC84A78A3FE1DCB43A1730F_TOKEN');
@@ -12,6 +12,30 @@ test('published buyer configuration excludes database-only draft state', () => {
   assert.equal(config.auth_env_var, 'BUYER_TOKEN');
   assert.equal(config.published_config, undefined);
   assert.equal(config.published_at, undefined);
+});
+
+test('buyer token status verifies the production Vercel variable', async () => {
+  const previous = { token: process.env.VERCEL_API_TOKEN, project: process.env.VERCEL_PROJECT_ID, fetch: global.fetch };
+  process.env.VERCEL_API_TOKEN = 'vercel-token';
+  process.env.VERCEL_PROJECT_ID = 'project-id';
+  global.fetch = async () => new Response(JSON.stringify({ envs: [
+    { key: 'BUYER_PRESENT_TOKEN', target: ['production', 'preview'] },
+    { key: 'BUYER_PREVIEW_TOKEN', target: ['preview'] }
+  ] }), { status: 200 });
+  try {
+    const buyers = await buyerTokenStatus([
+      { id: '1', auth_env_var: 'BUYER_PRESENT_TOKEN' },
+      { id: '2', auth_env_var: 'BUYER_PREVIEW_TOKEN' },
+      { id: '3', auth_env_var: null }
+    ]);
+    assert.equal(buyers[0].token_configured, true);
+    assert.equal(buyers[1].token_configured, false);
+    assert.equal(buyers[2].token_configured, false);
+  } finally {
+    global.fetch = previous.fetch;
+    if (previous.token === undefined) delete process.env.VERCEL_API_TOKEN; else process.env.VERCEL_API_TOKEN = previous.token;
+    if (previous.project === undefined) delete process.env.VERCEL_PROJECT_ID; else process.env.VERCEL_PROJECT_ID = previous.project;
+  }
 });
 
 test('routing deployment starts only after Vercel returns the exact saved snapshot', async () => {

@@ -1,7 +1,7 @@
 const { randomUUID } = require('node:crypto');
 const db = require('../lib/supabase');
 const { deliverToBuyer, persistDelivery, runtimeBuyers } = require('../lib/lead-delivery');
-const { routingBuyer, saveBuyerToken, publishRouting } = require('../lib/vercel-admin');
+const { routingBuyer, saveBuyerToken, buyerTokenStatus, publishRouting } = require('../lib/vercel-admin');
 
 function bearer(req) {
   const value = String(req.headers.authorization || '');
@@ -59,7 +59,10 @@ module.exports = async function handler(req, res) {
       const attempts = await db.request(`buyer_attempts?lead_id=eq.${encodeURIComponent(id)}&select=*,buyers(name,campaign_name,campaign_id)&order=created_at.asc`);
       return res.status(200).json({ lead: leads[0], attempts });
     }
-    if (req.method === 'GET' && action === 'buyers') return res.status(200).json(await db.request('buyers?select=*&order=priority.asc'));
+    if (req.method === 'GET' && action === 'buyers') {
+      const buyers = await db.request('buyers?select=*&order=priority.asc');
+      return res.status(200).json(await buyerTokenStatus(buyers));
+    }
     if (req.method === 'GET' && action === 'export') {
       const search = text(queryValue(req.query.search), 100).replace(/[(),*]/g, ' ').trim();
       const status = text(queryValue(req.query.status), 30);
@@ -97,7 +100,12 @@ module.exports = async function handler(req, res) {
         timeout_ms: Math.min(30000, Math.max(1000, Number(body.timeout_ms) || 12000)), updated_at: new Date().toISOString()
       };
       const apiToken = text(body.api_token, 4000);
-      if (apiToken) update.auth_env_var = await saveBuyerToken(id, apiToken);
+      if (apiToken) {
+        const savedToken = await saveBuyerToken(id, apiToken);
+        update.auth_env_var = savedToken.key;
+        update.token_last_four = savedToken.lastFour;
+        update.token_updated_at = new Date().toISOString();
+      }
       await db.request(`buyers?id=eq.${encodeURIComponent(id)}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(update) });
       await audit(user, 'update_buyer', 'buyer', id, { delivery_mode: update.delivery_mode, environment: update.environment });
       return res.status(200).json({ success: true });
@@ -112,6 +120,8 @@ module.exports = async function handler(req, res) {
       const buyerId = text((req.body || {}).buyer_id, 36);
       const buyers = await db.request(`buyers?id=eq.${encodeURIComponent(buyerId)}&select=*`);
       if (!buyers[0]) return res.status(404).json({ error: 'Buyer not found' });
+      const [verifiedBuyer] = await buyerTokenStatus(buyers);
+      if (!verifiedBuyer.token_configured) return res.status(400).json({ error: 'API token is missing. Add the token and save this buyer before publishing.' });
       const selected = routingBuyer(buyers[0]);
       const publishedRows = await db.request('buyers?published_config=not.is.null&select=id,published_config');
       const routing = publishedRows.filter(row => row.id !== buyerId).map(row => row.published_config);

@@ -29,7 +29,7 @@ ADMIN
 - Browser roles have no table privileges; server operations use the secret key
 - Buyer routing states: off, direct_post, ping_post
 - New buyers default to off and test
-- Saving a buyer token writes a sensitive Vercel environment variable; Publish Routing writes the routing snapshot and invokes the deploy hook
+- Saving a buyer token verifies the Vercel environment variable and records only its last four characters and replacement time in Supabase; publishing refuses a buyer whose token is missing
 - Browser redirects immediately; lead insert and all buyer deliveries begin in parallel
 
 MANUAL SETUP ORDER (NOT PERFORMED BY CODEX)
